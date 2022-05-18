@@ -1,0 +1,164 @@
+{% extends 'common.html' %}
+{% block head %}
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!--不允许用户缩放-->
+    <title>xrr的个人网站</title>
+    <style>
+        .tab {
+            height: 30px;
+            line-height: 30px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        .not-selected-tab:hover {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+        .selected-tab {
+            background-color: #6c757d;
+            color: white;
+        }
+        .tab-block {
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block onload %}
+    style="background-image: url({{ url_for('static', filename='images/index-background.jpg') }}); background-size: cover; background-repeat: no-repeat"
+{% endblock %}
+{% block body %}
+    <div class="container" style="padding-top: 50px">
+        <div class="row">
+            <div class="col-3" style="background: rgba(255, 255, 255, 0.8); height: 300px">
+                <div class="container module rounded-3 tab">
+                    个人中心
+                </div>
+                <div class="container module rounded-3 tab">
+                    安全
+                </div>
+                {% if user.get_user().authority == 3 %}
+                <div class="container module rounded-3 tab">
+                    发布博客
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-9">
+                <div class="container">
+                    <div class="row tab-block">
+                        <div class="col-12" style="background: rgba(255, 255, 255, 0.8)">
+                            <div class="container module">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row tab-block">
+                        <div class="col-12" style="background: rgba(255, 255, 255, 0.8)">
+                            <div class="container module pt-5">
+                                <h4>修改密码</h4>
+                                <hr>
+                                <div class="row mb-3">
+                                    <div class="col-auto">
+                                        <label for="old_password" class="col-form-label">旧密码</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input type="password" id="old_password" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-auto">
+                                        <label for="new_password" class="col-form-label">新密码</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input type="password" id="new_password" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-auto">
+                                        <label for="new_password_2" class="col-form-label">再次输入新密码</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input type="password" id="new_password_2" class="form-control">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-outline-primary btn-sm">提交</button>
+                            </div>
+                            <div class="container module pt-5">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row tab-block">
+                        <div class="col-12" style="background: rgba(255, 255, 255, 0.8)">
+                            <div class="container module pt-5">
+                                <h4>发布博客</h4>
+                                <hr>
+                                <form id="blog_form" method="post" enctype="multipart/form-data" onsubmit="submit_blog(); return false">
+                                    <div class="mb-3">
+                                        <label for="blog_title" class="form-label">博客标题</label>
+                                        <input class="form-control" type="text" id="blog_title" name="blog_title">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="form_file" class="form-label">请上传markdown(.md)文件</label>
+                                        <input class="form-control" type="file" id="form_file" name="form_file" accept=".md">
+                                    </div>
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">提交</button>
+                                </form>
+                            </div>
+                            <div class="container module pt-5">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var selected_tab = 1;
+        var tabs = $(".tab");
+        $(document).ready(function() {
+            $(".tab:not(:eq(" + selected_tab + "))").addClass("not-selected-tab");
+            $(".tab:eq(" + selected_tab + ")").addClass("selected-tab");
+            $(".tab-block:eq(" + selected_tab + ")").css("display", "block");
+        });
+
+        tabs.on('mouseenter', function() {
+            var not_sub = $(".tab:not(:eq(" + selected_tab + "))");
+            not_sub.on('click', function () {
+                $(".tab:not(:eq(" + selected_tab + "))").removeClass("not-selected-tab");
+                $(".tab:eq(" + selected_tab + ")").removeClass("selected-tab");
+                $(".tab-block:eq(" + selected_tab + ")").css("display", "none");
+
+                var index = $(".tab").index(this);
+
+                $(".tab:not(:eq(" + index + "))").addClass("not-selected-tab");
+                $(".tab:eq(" + index + ")").addClass("selected-tab");
+                $(".tab-block:eq(" + index + ")").css("display", "block");
+                selected_tab = index;
+            });
+        });
+
+        tabs.on('mouseleave', function() {
+            var not_sub = $(".tab:not(:eq(" + selected_tab + "))");
+            not_sub.off('click');
+        });
+
+        function submit_blog() {
+            var formData = new FormData(document.getElementById('blog_form'));
+            console.log(formData.get('form_file'));
+            $.ajax({
+                url: "{{ url_for('personal.upload_blog') }}",
+                type: "POST",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(e) {
+                    alert(e['status']);
+                },
+                error: function() {
+                    console.log('服务器内部出错');
+                }
+            });
+        }
+    </script>
+{% endblock %}

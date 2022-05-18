@@ -1,0 +1,78 @@
+{% extends 'common.html' %}
+{% block head %}
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!--不允许用户缩放-->
+    <title>xrr的空间</title>
+    <style>
+        .music {
+            background-image: url({{ url_for('static', filename="images/space-music.jpg") }});
+            background-size: cover;
+            height: calc(100vh - 50px);
+            width: 100vw;
+            overflow-x: hidden;
+        }
+        .music-introduction {
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 1));
+            animation: music-translate 1s ease;
+            transform: translate(40%);
+            animation-fill-mode: forwards;
+        }
+        .album {
+            background-image: url({{ url_for('static', filename="images/space-album.jpg") }});
+            background-size: cover;
+            height: calc(100vh - 50px);
+            width: 100vw;
+        }
+        .album-introduction {
+            height: 100%;
+            background: linear-gradient(to left, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 1));
+            animation: album-translate 1s ease;
+            transform: translate(-40%);
+            animation-fill-mode: forwards;
+        }
+        @keyframes music-translate
+        {
+            from {transform: translate(40%)}
+            to {transform: translate(0%)}
+        }
+        @keyframes album-translate
+        {
+            from {transform: translate(-40%)}
+            to {transform: translate(0%)}
+        }
+    </style>
+{% endblock %}
+{% block body %}
+        <div class="container-fluid" style="padding-top: 50px">
+            <div class="row">
+                <div class="col-12 music">
+                    <div class="row" style="height: 100%">
+                        <div class="offset-6 col-6 position-relative music-introduction">
+                            <div class="position-absolute top-50 start-50 translate-middle">
+                                <h1>xrr的音乐世界</h1>
+                                <small>在这个繁杂而孤独的社会，音乐一直是我在这个世界上继续存在，继续坚持，继续生活下去的动力。</small>
+                                <br>
+                                <br>
+                                <button class="btn btn-outline-secondary" onclick="location.href='{{ url_for('space.music') }}'">进入</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 album">
+                    <div class="row" style="height: 100%">
+                        <div class="col-6 position-relative album-introduction">
+                            <div class="position-absolute top-50 start-50 translate-middle">
+                                <h1>xrr的相册</h1>
+                                <small>”携来百侣曾游。忆往昔峥嵘岁月稠。恰同学少年，风华正茂；书生意气，挥斥方遒。“</small>
+                                <br>
+                                <br>
+                                <button class="btn btn-outline-secondary">进入</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

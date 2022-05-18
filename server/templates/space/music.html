@@ -1,0 +1,208 @@
+{% extends 'common.html' %}
+{% block head %}
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!--不允许用户缩放-->
+    <title>xrr的空间</title>
+    <style>
+        .music {
+            background-size: cover;
+            height: calc(100vh - 100px);
+            width: 100vw;
+            overflow-x: hidden;
+        }
+        .music-row-left {
+            height: 100%;
+            background: linear-gradient(to left, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 1));
+        }
+        .music-row-right {
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 1));
+        }
+        .film {
+            background-image: url("../../static/images/film.jpg");
+            background-size: 100%;
+        }
+        #introduction {
+            animation: appear 1s ease;
+            animation-fill-mode: forwards;
+        }
+        #introduction-text {
+            opacity: 0;
+            animation: appear 1s ease;
+            animation-delay: 0.5s;
+            animation-fill-mode: forwards;
+        }
+        #introduction-text::-webkit-scrollbar {
+            display: none;
+        }
+        #information {
+            background-image: url("../../static/images/music_infomation_age.jpg");
+        }
+        #atomic {
+            background-image: url("../../static/images/music_atomic_age.jpg");
+        }
+        #modern {
+            background-image: url("../../static/images/music_modern_age.jpg");
+        }
+        #industrial {
+            background-image: url("../../static/images/music_industrial_age.jpg");
+        }
+        #renaissance {
+            background-image: url("../../static/images/music_renaissance_age.png");
+        }
+        #medieval {
+            background-image: url("../../static/images/music_medieval_age.png");
+        }
+        @keyframes appear
+        {
+            from {opacity: 0}
+            to {opacity: 100%}
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="container-fluid" style="padding-top: 50px">
+        <div class="row align-items-center" style="background-color: black; background-repeat: no-repeat; background-position: center;">
+            <div class="container-fluid position-relative" id="introduction" style="width:auto">
+                <img class="img-fluid" src="../../static/images/music-introduction.jpg" alt="music-introduction" style="height: calc(100vh - 50px)">
+                <div class="row">
+                    <div class="col-12 position-absolute top-50 start-50 translate-middle" style="margin-bottom: calc(100vh - 50px); height: calc(100vh - 50px); background-image: linear-gradient(to right, rgba(0 ,0 ,0 ,1) 0%, rgba(0 ,0 ,0 ,0) 10%, rgba(0 ,0 ,0 ,0) 90%, rgba(0, 0, 0, 1) 100%)">
+                        <div class="container-fluid" style="height: 100%; padding: 15% 7.5% 32.5% 47.5%">
+                            <div class="container-fluid" style="height: 100%; width: 100%; overflow: hidden">
+                                <div class="row" style="height: 100%;">
+                                    <div class="container-fluid" id="introduction-text" style="height: 100%; overflow-y: scroll">
+                                        <h1>前  言</h1>
+                                        <p>也许是受到历史向游戏的影响，我热衷于体悟时代的变迁。这种热衷也体现在对音乐的品味中。</p>
+                                        <p>玩过《文明》的小伙伴们应该知道，整个游戏分为八个阶段（不包括未来的话），每一个阶段都具有所处时代的特色风格。</p>
+                                        <p>因此在这里，我将各种歌曲划分进相应的时代，聆听的感觉会变得更加强烈，仿佛自己身处那个时代。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-1 film"></div>
+            <div class="col-10">
+                <div class="row">
+                    <div class="col-12" style="height: 25px; background-color: black"></div>
+                    <div class="col-12 music" id="medieval">
+                        <div class="row music-row-right">
+                            <div class="offset-6 col-6 position-relative music-introduction">
+                                <div class="position-absolute top-50 start-50 translate-middle" style="color: white">
+                                    <h3>THE MEDIEVAL AGE</h3>
+                                    <h1>中 世 纪</h1>
+                                    <small style="color: silver">你用石头建造了很多城市，见证了早期帝国的崛起与衰落。不久你将站在城堡高耸的尖塔下，
+                                        旁边是你勇敢的骑士。关于你国民的故事将从这里写起。如同年轻学徒学习握剑一样，你会逐渐了解自己在这个世界上位置。</small>
+                                    <br>
+                                    <br>
+                                    <button class="btn btn-outline-secondary">进入</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12" style="height: 25px; background-color: black"></div>
+                </div>
+                <div class="row">
+                    <div class="col-12" style="height: 25px; background-color: black"></div>
+                    <div class="col-12 music" id="renaissance">
+                        <div class="row music-row-left">
+                            <div class="col-6 position-relative music-introduction">
+                                <div class="position-absolute top-50 start-50 translate-middle" style="color: white">
+                                    <h3>THE RENAISSANCE</h3>
+                                    <h1>文 艺 复 兴</h1>
+                                    <small style="color: silver">从步枪的枪管到天空中的火花，新的动力不断产生。甚至新印刷的书刊里安安静静的文字也蕴含着巨大变化。
+                                        这个世界曾经又大又神秘，如今已变得越来越小，越来越熟悉。然而，总有问题有待解决，总有信仰需要经受考验，总有民族认同需要形成。</small>
+                                    <br>
+                                    <br>
+                                    <button class="btn btn-outline-secondary">进入</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12" style="height: 25px; background-color: black"></div>
+                </div>
+                <div class="row">
+                    <div class="col-12" style="height: 25px; background-color: black"></div>
+                    <div class="col-12 music" id="industrial">
+                        <div class="row music-row-right">
+                            <div class="offset-6 col-6 position-relative music-introduction">
+                                <div class="position-absolute top-50 start-50 translate-middle" style="color: white">
+                                    <h3>THE INDUSTRIAL AGE</h3>
+                                    <h1>工 业 时 代</h1>
+                                    <small style="color: silver">机器嗡嗡响个不停、烟味刺鼻、灰烬和煤烟遮挡住视线——这是时代变迁的标志。
+                                        科学和文化进步的诱惑是推动你的王国不断向前发展的动力。现在，你面临的挑战是维持地球和人类、和平与战争之间微妙的平衡。</small>
+                                    <br>
+                                    <br>
+                                    <button class="btn btn-outline-secondary">进入</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12" style="height: 25px; background-color: black"></div>
+                </div>
+                <div class="row">
+                    <div class="col-12" style="height: 25px; background-color: black"></div>
+                    <div class="col-12 music" id="modern">
+                        <div class="row music-row-left">
+                            <div class="col-6 position-relative music-introduction">
+                                <div class="position-absolute top-50 start-50 translate-middle" style="color: white">
+                                    <h3>THE MODERN AGE</h3>
+                                    <h1>摩 登 时 代</h1>
+                                    <small style="color: silver">最先，有很多关于飞人的传说。如今，你位于这些传说成为现实的临界点。
+                                        通过飞行和新的通讯方式，你能创造出一个又小又亲密的世界。
+                                        但代价是什么呢?对于如何统治、如何生存的问题，不同理解造成了全球冲突。
+                                        在这种越来越吵闹不休的思想辩论中，你必须选择自己要走的路。</small>
+                                    <br>
+                                    <br>
+                                    <button class="btn btn-outline-secondary">进入</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12" style="height: 25px; background-color: black"></div>
+                </div>
+                <div class="row">
+                    <div class="col-12" style="height: 25px; background-color: black"></div>
+                    <div class="col-12 music" id="atomic">
+                        <div class="row music-row-right">
+                            <div class="offset-6 col-6 position-relative music-introduction">
+                                <div class="position-absolute top-50 start-50 translate-middle" style="color: white">
+                                    <h3>THE ATOMIC AGE</h3>
+                                    <h1>原 子 时 代</h1>
+                                    <small style="color: silver">新发现的领域扩宽了我们的认知，从微小的原子到壮阔的外太空。
+                                        我们比历史上任何时候都更接近真相，远远超过我们的理解范围。你需要选择如何使用这些知识，来击退前所未有的黑暗。</small>
+                                    <br>
+                                    <br>
+                                    <button class="btn btn-outline-secondary">进入</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12" style="height: 25px; background-color: black"></div>
+                </div>
+                <div class="row">
+                    <div class="col-12" style="height: 25px; background-color: black"></div>
+                    <div class="col-12 music" id="information">
+                        <div class="row music-row-left">
+                            <div class="col-6 position-relative music-introduction">
+                                <div class="position-absolute top-50 start-50 translate-middle" style="color: white">
+                                    <h3>THE INFORMATIONAL AGE</h3>
+                                    <h1>信 息 时 代</h1>
+                                    <small style="color: silver">信息世界在你手掌之中，即时通信网络遍布全球。然而，还未有对未来的统一看法。
+                                        我们在科技、文化和政治上不断竞争。我们拥有的致命武器可以摧毁我们整个星球。带领我们小心而大胆地前行，建立面向未来的全球社区。</small>
+                                    <br>
+                                    <br>
+                                    <button class="btn btn-outline-secondary">进入</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12" style="height: 25px; background-color: black"></div>
+                </div>
+            </div>
+            <div class="col-1 film"></div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,10 @@
+.idea/
+node_modules/
+migrations/
+__pycache__
+个人网站.pem
+个人网站.ppk
+博客例.txt
+登录方法.txt
+github_token.txt
+package-lock.json
