@@ -19,11 +19,22 @@
           <div class="container">
             <table class="table">
               <thead>
-                <tr>
-                    <th scope="col">&#127774;博客</th>
-                </tr>
+                <tr><th scope="col">&#127774;博客</th></tr>
               </thead>
-              <tbody id="index_blog_list" ref="index_blog_list"></tbody>
+              <tbody id="index_blog_list" ref="index_blog_list">
+                <tr v-if="blogs_num === null"><td>服务器内部错误</td></tr>
+                <tr v-for="b in blogs" :key="b.create_time">
+                  <td style="padding: 30px 0">
+                    <p class="fs-1 fw-bold">{{ b.blog_title }}</p>
+                    <div class="blog text-start" :style="{ width: td_width + 'px', wordWrap: 'break-word' }">
+                    <!--<div class="blog text-start" :style="`width: ${td_width}px; word-wrap: break-word`">-->
+                      <div v-html="b.content"></div>
+                    </div>
+                    <br>
+                    <p class="fs-6 fw-light text-secondary text-end">发布于 {{ b.create_time }}</p>
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -43,16 +54,19 @@ import global from "@/App";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Index",
-  components: {Divination, ClockMaster, Announcement},
+  components: { Divination, ClockMaster, Announcement },
   data() {
     return {
-      tr: "",
       httpUrl: global.httpUrl,
+      td_width: 0,
+      blogs_num: 0,
+      blogs: [],
     }
   },
   methods: {
     askForBlogs(start_page, per_page) {
-      let tr = "";
+      this.td_width = this.$refs.index_blog_list.offsetWidth
+
       const path = `${this.httpUrl}/ask_for_blogs`
       axios.post(path, {
         'start_page': start_page,
@@ -60,37 +74,24 @@ export default {
       })
         .then((res) => {
           if(res.data.error === null) {
+            this.blogs_num = res.data.number
+            this.blogs = res.data.blogs
             for(let i = 0; i < res.data.number; i++) {
-              let blog = res.data.blogs[i]
-              tr += ` \
-                <tr> \
-                  <td style="padding: 30px 0"> \
-                    <p class="fs-1 fw-bold">${blog.blog_title}</p> \
-                    <div class="blog" style="text-align: left"> \
-                      ${marked.parse(blog.content)} \
-                    </div> \
-                    <p class="fs-6 fw-light text-secondary" style="text-align: right">发布于 ${blog.create_time}</p>
-                  </td> \
-                </tr> \
-              `
+              this.blogs[i].content = marked.parse(this.blogs[i].content)
             }
           }
-          else
-            tr += "<tr><td>服务器内部错误</td></tr>"
-          this.tr = tr
-          this.$refs.index_blog_list.innerHTML = this.tr
+          else {
+            this.blogs_num = null
+          }
         })
         .catch((error) => {
           console.error(error)
-          tr += "<tr><td>服务器内部错误</td></tr>"
-          this.tr = tr
-          this.$refs.index_blog_list.innerHTML = this.tr
+          this.blogs_num = null
         })
     }
   },
   mounted() {
     this.askForBlogs(1, 10)
-
     //
     /*{% for i in range(blog_articles|length) %}
         $("#index_blog_list").append(tr);

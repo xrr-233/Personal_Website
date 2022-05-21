@@ -1,9 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Index from "@/components/Index";
-import ClockMaster from "@/components/ClockMaster";
-import Announcement from "@/components/Announcement";
-import Divination from "@/components/Divination";
-import UnderConstruction from "@/components/UnderConstruction";
+import Index from "@/pages/Index";
 
 const routes = [
   {
@@ -17,33 +13,34 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import('../components/Space.vue'),
-  },
-  {
-    path: '/clock_master',
-    name: 'ClockMaster',
-    component: ClockMaster,
-  },
-  {
-    path: '/announcement',
-    name: 'Announcement',
-    component: Announcement,
-  },
-  {
-    path: '/divination',
-    name: 'Divination',
-    component: Divination,
+    component: () => import('@/pages/Space.vue'),
+    meta: {
+      title: "xrr的空间"
+    }
   },
   {
     path: '/under_construction',
     name: 'UnderConstruction',
-    component: UnderConstruction,
+    component: () => import('@/pages/UnderConstruction.vue'),
+  },
+  {
+    path: '/personal',
+    name: 'Personal',
+    component: () => import('@/pages/Personal.vue'),
   }
 ]
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes
+})
+
+// 全局路由守卫
+router.afterEach((to) => {
+  if(to.meta.title !== undefined)
+    document.title = to.meta.title
+  else
+    document.title = "xrr的个人网站"
 })
 
 export default router

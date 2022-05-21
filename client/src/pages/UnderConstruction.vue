@@ -1,7 +1,6 @@
 <template>
-  <div class="container-fluid home">
-    <div class="container block_background">敬请期待</div>
-  </div>
+  <div class="container-fluid home"></div>
+  <div class="container block_background" style="padding-top: 50px">敬请期待</div>
 </template>
 
 <script>
@@ -17,7 +16,8 @@ export default {
   height: 100%;
   background-image: url("../../public/index-background.jpg");
   background-size: cover;
-  position: absolute;
+  position: fixed;
+  z-index: -1;
 }
 .block_background {
   background: rgba(255, 255, 255, 0.8);

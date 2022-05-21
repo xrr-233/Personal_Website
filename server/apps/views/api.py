@@ -1,5 +1,6 @@
 import json
 import os
+import jwt
 from hashlib import sha256
 
 from flask import Blueprint, jsonify, request, url_for
@@ -7,29 +8,45 @@ from ext import db
 
 from apps.models.blog_article import BlogArticle
 from apps.models.user_account import UserAccount
+from config import SECRET
 
 api = Blueprint('index', __name__)
 
-global_user = None
+@api.route('/login', methods=['GET', 'POST'])
+def login():
+    email = request.form.get('email')
+    password = request.form.get('password')
 
+    users = UserAccount.query.filter_by(email=email)
+    user = None
+    for u in users:
+        user = u
 
-@api.route('/get_user_status', methods=['GET'])
-def get_user_status():
     res = {
-        'user': None
+        'status': 'success',
     }
-
-    global global_user
-    if(global_user != None):
-        res = {
-            'user': {
-                'user_name': global_user.user_name,
-                'nickname': global_user.nickname,
-                'email': global_user.email,
-                'create_time': global_user.create_time.strftime('%Y-%m-%d %H:%M:%S'),
-                'authority': global_user.authority,
-            }
+    if(user == None):
+        res.update({
+            'status': 'failure',
+            'msg': 'user_not_exist',
+        })
+    elif(user.password != sha256(password.encode('utf-8')).hexdigest()):
+        res.update({
+            'status': 'failure',
+            'msg': 'wrong_password',
+        })
+    else:
+        payload = {
+            'user_name': user.user_name,
+            'nickname': user.nickname,
+            'email': user.email,
+            'create_time': user.create_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'authority': user.authority,
         }
+        token = jwt.encode(payload, SECRET, algorithm='HS256')
+        res.update({
+            'token': token
+        })
 
     return json.dumps(res)
 
@@ -60,51 +77,5 @@ def ask_for_blogs():
             })
         except:
             res.update({'error': 'critical'})
-
-    return json.dumps(res)
-
-@api.route('/login', methods=['GET', 'POST'])
-def login():
-    email = request.form.get('email')
-    password = request.form.get('password')
-
-    users = UserAccount.query.filter_by(email=email)
-    user = None
-    for u in users:
-        user = u
-
-    res = {
-        'status': 'success',
-    }
-    if(user == None):
-        res.update({
-            'status': 'failure',
-            'msg': 'user_not_exist',
-        })
-    elif(user.password != sha256(password.encode('utf-8')).hexdigest()):
-        res.update({
-            'status': 'failure',
-            'msg': 'wrong_password',
-        })
-    else:
-        global global_user
-        global_user = user
-
-    return json.dumps(res)
-
-@api.route('/logout', methods=['GET', 'POST'])
-def logout():
-    email = request.json.get('email')
-
-    res = {
-        'status': 'failure',
-    }
-
-    global global_user
-    if(email == global_user.email):
-        global_user = None
-        res.update({
-            'status': 'success',
-        })
 
     return json.dumps(res)

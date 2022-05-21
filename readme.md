@@ -79,3 +79,23 @@ https://juejin.cn/post/6909732949378203662
 采用新时钟样式 https://github.com/SlyTy7/clock
 
 已经较为系统化地掌握了Vue模块的开发，以及通过axios实现的vue前端与flask后端（api与数据库）的交互
+
++ 2022/5/20
+
+提供项目参考 https://www.cnblogs.com/donghaoblogs/p/10523983.html
+
+路径中的#代表哈希模式hash，历史模式history虽好看但需要后端工作解决history 404问题
+
++ 2022/5/21
+
+感谢尚硅谷的老师 https://www.bilibili.com/video/BV1Zy4y1K7SH?spm_id_from=333.1007.top_right_bar_window_custom_collection.content.click
+
+知道了vue-router的整体框架以及使用JWT token保存用户登录数据的方法
+
+https://blog.csdn.net/qq_29272181/article/details/121190778
+
+https://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html
+
+https://myapollo.com.tw/zh-tw/python-json-web-token/
+
+（目前残留登录后modal无法收回的bug）

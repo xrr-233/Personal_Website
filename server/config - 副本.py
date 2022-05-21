@@ -1,6 +1,7 @@
 SERVER = "localhost"
 DATABASE_USERNAME = "***"
 DATABASE_PASSWORD = "***"
+SECRET = "***"
 
 class Config:
     DEBUG = True

@@ -119,25 +119,19 @@ import "../assets/css/font.css"
 
 export default {
   name: "ClockMaster",
-  mounted() {
-    const updateClock = () => {
-      resetClock();
-      getCurrentTime();
-      displayCurrentTime();
-    };
+  methods: {
+    getCurrentTime() {
+      let fullDate = new Date()
+      let month = fullDate.getMonth()
+      let date = fullDate.getDate()
+      let year = fullDate.getFullYear()
+      let day = fullDate.getDay()
+      let hours = fullDate.getHours()
+      let minutes = fullDate.getMinutes()
+      let seconds = fullDate.getSeconds()
+      let period = (hours >= 12) ? "pm" : "am"
 
-    const getCurrentTime = () => {
-      let fullDate = new Date();
-      let month = fullDate.getMonth();
-      let date = fullDate.getDate();
-      let year = fullDate.getFullYear();
-      let day = fullDate.getDay();
-      let hours = fullDate.getHours();
-      let minutes = fullDate.getMinutes();
-      let seconds = fullDate.getSeconds();
-      let period = (hours >= 12) ? "pm" : "am";
-
-      window.clock = {};
+      window.clock = {}
       window.clock.time = {
         fullDate: fullDate,
         month: month,
@@ -148,87 +142,92 @@ export default {
         minutes: minutes,
         seconds: seconds,
         period: period
-      };
-    };
+      }
+    },
 
-    const displayCurrentTime = () => {
-      let day = window.clock.time.day;
-      let month = window.clock.time.month;
-      let date = window.clock.time.date;
-      let year = window.clock.time.year;
-      let hours = window.clock.time.hours;
-      let minutes = window.clock.time.minutes;
-      let seconds = window.clock.time.seconds;
-      let period = window.clock.time.period;
+    displayCurrentTime() {
+      let day = window.clock.time.day
+      let month = window.clock.time.month
+      let date = window.clock.time.date
+      let year = window.clock.time.year
+      let hours = window.clock.time.hours
+      let minutes = window.clock.time.minutes
+      let seconds = window.clock.time.seconds
+      let period = window.clock.time.period
 
       //formats hours
-      hours = (hours > 12) ? (hours - 12) : hours;
-      hours = (hours === 0) ? 12 : hours;
-      hours = (hours <= 9) ? ("0" + hours) : hours;
+      hours = (hours > 12) ? (hours - 12) : hours
+      hours = (hours === 0) ? 12 : hours
+      hours = (hours <= 9) ? ("0" + hours) : hours
       //formats minutes
-      minutes = (minutes <= 9) ? ("0" + minutes) : minutes;
+      minutes = (minutes <= 9) ? ("0" + minutes) : minutes
       //formats seconds
-      seconds = (seconds <= 9) ? ("0" + seconds) : seconds;
+      seconds = (seconds <= 9) ? ("0" + seconds) : seconds
       //formats day
-      let days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-      let dayText = ``;
-      if (days[day].length === 6) dayText = `<span style="color: #2b2828;">ooo</span>${days[day]}`;
-      if (days[day].length === 7) dayText = `<span style="color: #2b2828;">oo</span>${days[day]}`;
-      if (days[day].length === 8) dayText = `<span style="color: #2b2828;">o</span>${days[day]}`;
-      if (days[day].length === 9) dayText = `<span style="color: #2b2828;"></span>${days[day]}`;
+      let days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+      let dayText = ``
+      if (days[day].length === 6) dayText = `<span style="color: #2b2828;">ooo</span>${days[day]}`
+      if (days[day].length === 7) dayText = `<span style="color: #2b2828;">oo</span>${days[day]}`
+      if (days[day].length === 8) dayText = `<span style="color: #2b2828;">o</span>${days[day]}`
+      if (days[day].length === 9) dayText = `<span style="color: #2b2828;"></span>${days[day]}`
       //formats mobile day
-      let mobileDays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+      let mobileDays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
       //formats month
-      let months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+      let months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
       //formats date
-      date = (date <= 9) ? ("0" + date) : date;
+      date = (date <= 9) ? ("0" + date) : date
 
       // targets the html
-      const dayHtml = document.getElementsByClassName('day-alpha')[0];
-      const mobileDayHtml = document.getElementsByClassName('day-alpha-mobile')[0];
-      const monthHtml = document.getElementsByClassName('month-alpha')[0];
-      const dateHtml = document.getElementsByClassName('date-number')[0];
-      const yearHtml = document.getElementsByClassName('year-number')[0];
-      const hoursHtml = document.getElementsByClassName('hours')[0];
-      const minutesHtml = document.getElementsByClassName('minutes')[0];
-      const secondsHtml = document.getElementsByClassName('seconds')[0];
-      const periodHtml = document.getElementsByClassName(period)[0];
+      const dayHtml = document.getElementsByClassName('day-alpha')[0]
+      const mobileDayHtml = document.getElementsByClassName('day-alpha-mobile')[0]
+      const monthHtml = document.getElementsByClassName('month-alpha')[0]
+      const dateHtml = document.getElementsByClassName('date-number')[0]
+      const yearHtml = document.getElementsByClassName('year-number')[0]
+      const hoursHtml = document.getElementsByClassName('hours')[0]
+      const minutesHtml = document.getElementsByClassName('minutes')[0]
+      const secondsHtml = document.getElementsByClassName('seconds')[0]
+      const periodHtml = document.getElementsByClassName(period)[0]
 
       // changes the html values
-      dayHtml.innerHTML = dayText;
-      mobileDayHtml.innerHTML = mobileDays[day];
-      monthHtml.innerHTML = months[month];
-      dateHtml.innerHTML = date;
-      yearHtml.innerHTML = year;
-      hoursHtml.innerHTML = hours;
-      minutesHtml.innerHTML = minutes;
-      secondsHtml.innerHTML = seconds;
-      periodHtml.classList.add("light-on");
-    };
+      dayHtml.innerHTML = dayText
+      mobileDayHtml.innerHTML = mobileDays[day]
+      monthHtml.innerHTML = months[month]
+      dateHtml.innerHTML = date
+      yearHtml.innerHTML = year
+      hoursHtml.innerHTML = hours
+      minutesHtml.innerHTML = minutes
+      secondsHtml.innerHTML = seconds
+      periodHtml.classList.add("light-on")
+    },
 
-    const resetClock = () => {
-      const lights = document.querySelectorAll(".light-on");
+    resetClock() {
+      const lights = document.querySelectorAll(".light-on")
 
       if (lights) {
         lights.forEach(item => {
           item.classList.remove("light-on")
-        });
+        })
       }
-    };
+    },
 
-    updateClock();
-    setInterval(() => {
-      updateClock();
-    }, 1000);
-
-    /*let x = this.$refs.table_clock.offsetWidth
-    let x_ = this.$refs.home_clock.offsetWidth
-    let y = this.$refs.table_clock.offsetHeight
-    let y_ = y * x_ / x
-    console.log(`${x} ${x_} ${y} ${y_}`)
-    console.log(`scale(${x_ / x}) translate(${-(x - x_) / 2}px, ${-(y - y_) / 2}px)`)
-    this.$refs.table_clock.style.transform = `scale(${x_ / x}) translate(${-(x - x_) / 2}px, ${-(y - y_) / 2}px)`
-    this.$refs.table.style.width = x_*/
+    /*updateClock() {
+      resetClock()
+      getCurrentTime()
+      displayCurrentTime()
+    },*/
+  },
+  activated() {
+    this.resetClock()
+    this.getCurrentTime()
+    this.displayCurrentTime()
+    this.timer = setInterval(() => {
+      this.resetClock()
+      this.getCurrentTime()
+      this.displayCurrentTime()
+    }, 1000)
+  },
+  deactivated() {
+    clearInterval(this.timer)
   }
 }
 </script>

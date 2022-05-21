@@ -1,5 +1,6 @@
 <template>
-  <div class="container-fluid home">Space</div>
+  <div class="container-fluid home"></div>
+  <div>Space</div>
 </template>
 
 <script>
