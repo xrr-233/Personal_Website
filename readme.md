@@ -99,3 +99,9 @@ https://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html
 https://myapollo.com.tw/zh-tw/python-json-web-token/
 
 （目前残留登录后modal无法收回的bug）
+
+2022/6/2
+
+1. 修复了personal页面position导致的覆盖无法点击bug（残留左边栏长度跟着变的细节bug）
+
+2. 完成了personal页面修改密码的前后端大部分功能

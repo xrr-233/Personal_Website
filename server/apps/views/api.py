@@ -79,3 +79,33 @@ def ask_for_blogs():
             res.update({'error': 'critical'})
 
     return json.dumps(res)
+
+@api.route('/change_password', methods=['GET', 'POST'])
+def change_password():
+    email = request.json.get('email')
+    old_password = request.json.get('old_password')
+    new_password = request.json.get('new_password')
+
+    users = UserAccount.query.filter_by(email=email)
+    user = None
+    for u in users:
+        user = u
+
+    res = {
+        'status': 'success',
+    }
+    if (user == None):
+        res.update({
+            'status': 'failure',
+            'msg': 'user_not_exist',
+        })
+    elif (user.password != sha256(old_password.encode('utf-8')).hexdigest()):
+        res.update({
+            'status': 'failure',
+            'msg': 'wrong_password',
+        })
+    else:
+        user.password = sha256(new_password.encode('utf-8')).hexdigest()
+        db.session.commit()
+
+    return json.dumps(res)

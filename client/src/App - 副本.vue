@@ -4,34 +4,34 @@
     <div class="container text-center" style="line-height: 50px">
       <div class="row">
         <div class="col-1">
-          <div class="mx-auto logo" @click="jump('/')"></div>
+          <div class="mx-auto logo" @click="push('Index')"></div>
         </div>
-        <div class="offset-2 col-1 header-tab" @click="jump('/under_construction')">博客</div>
-        <div class="col-1 header-tab" @click="jump('/under_construction')">作品</div>
-        <div class="col-1 header-tab" @click="jump('/under_construction')">空间</div>
-        <div class="col-1 header-tab" @click="jump('/under_construction')">工具</div>
+        <div class="offset-2 col-1 header-tab" @click="push('UnderConstruction')">博客</div>
+        <div class="col-1 header-tab" @click="push('UnderConstruction')">作品</div>
+        <div class="col-1 header-tab" @click="push('UnderConstruction')">空间</div>
+        <div class="col-1 header-tab" @click="push('UnderConstruction')">工具</div>
         <div class="offset-2 col-3 position-relative">
           <button class="btn dropdown-toggle" ref="login_tab" id="login_tab" data-toggle="dropdown" style="color: white">
-            {{ user }}
+            {{ userName }}
             <span class="caret"></span>
           </button>
           <div ref="login_side_block" id="login_side_block" class="shadow p-3 mb-5 bg-body rounded border border-1 border-secondary position-absolute top-100 start-50 translate-middle-x">
             <div class="container-fluid">
-              <div v-if="user === '未登录'">
+              <div v-if="userStatus === null">
                 <button class="btn btn-outline-success col-12" data-bs-toggle="modal" data-bs-target="#login_modal">登录</button>
-                <button class="btn btn-outline-primary col-12">注册</button>
+                <button class="btn btn-outline-primary col-12" @click="push('UnderConstruction')">注册</button>
               </div>
               <div v-else>
                 <div class="row">
-                    <div class="offset-2 col-4">
-                        <img src="./assets/xrr.jpg" alt="xrr" class="img-fluid rounded-circle">
-                    </div>
-                    <div class="col-4" style="line-height: 50px">
-                        <b style="color: black">{{ user }}</b>
-                    </div>
+                  <div class="offset-2 col-4">
+                    <img src="./assets/xrr.jpg" alt="xrr" class="img-fluid rounded-circle">
+                  </div>
+                  <div class="col-4" style="line-height: 50px">
+                    <b style="color: black">{{ userName }}</b>
+                  </div>
                 </div>
                 <hr style="color: gray">
-                <button class="btn btn-outline-secondary col-12">个人中心</button><!-- onclick="location.href='{{ url_for("personal.personal") }}'" -->
+                <button class="btn btn-outline-secondary col-12" @click="block_toggle(); push('Personal')">个人中心</button>
                 <button class="btn btn-outline-danger col-12" @click="logout()">退出登录</button>
               </div>
             </div>
@@ -67,27 +67,19 @@
       </div>
     </div>
   </div>
-  <router-view/>
+  <router-view v-slot="{ Component }">
+    <keep-alive>
+      <component :is="Component" />
+    </keep-alive>
+  </router-view>
   <div ref="a_player"></div>
 </template>
 
 <script>
-/*
-var images = new Array()
-function preload() {
-    for (var i = 0; i < preload.arguments.length; i++) {
-        images[i] = new Image()
-        images[i].src = preload.arguments[i]
-    }
-}
-preload(
-    "../images/logo.png",
-    "../images/logo-hover.png"
-)
-*/
 import axios from "axios"
 import APlayer from "aplayer"
 import 'aplayer/dist/APlayer.min.css'
+import jwtDecode from "jwt-decode";
 
 const httpUrl = '***'
 
@@ -96,35 +88,29 @@ export default {
   httpUrl,
   data() {
     return {
-      user: null,
+      userName: '未登录',
       userStatus: null,
+      login_block: null,
+      login_tab: null,
     }
   },
   methods: {
-    getUserStatus() {
-      const path = `${httpUrl}/get_user_status`
-      axios.get(path)
-        .then((res) => {
-          if(res.data.user == null) {
-            this.user = "未登录"
-            this.userStatus = null
-          }
-          else {
-            if(res.data.user.nickname !== null)
-              this.user = res.data.user.nickname
-            else
-              this.user = res.data.user.user_name
-            this.userStatus = res.data.user
-          }
-        })
-        .catch((error) => {
-          console.error(error)
-        })
+    push(name) {
+      this.$router.push({ name: name })
     },
-    jump(path){
-      this.$router.push({ path: path })
-      //this.$router.go(-2)
-      //后退两步
+    block_toggle() {
+      if(this.userName === null)
+        return
+      if(this.login_block.style.display === "none")
+        this.login_block.style.display = "block"
+      else
+        this.login_block.style.display = "none"
+    },
+    block_init() {
+      this.login_block = this.$refs.login_side_block
+      this.login_tab = this.$refs.login_tab
+      this.login_block.style.display = "none"
+      this.login_tab.addEventListener("click", this.block_toggle)
     },
     login() {
       let form = document.getElementById('login_form');
@@ -135,7 +121,33 @@ export default {
       axios.post(path, formData)
         .then((res) => {
           if(res.data.status === "success") {
-            location.reload()
+
+            localStorage.setItem('token', res.data.token);
+            this.userStatus = jwtDecode(localStorage.token)
+            if(this.userStatus.nickname !== null)
+              this.userName = this.userStatus.nickname
+            else
+              this.userName = this.userStatus.user_name
+
+
+            this.block_toggle()
+
+            /*let modal = document.getElementById('login_modal')
+            let backdrop = document.querySelector('.modal-backdrop .fade .show')
+            // Remove the `modal-open` class from the body
+            document.body.classList.remove('modal-open')
+            // Re-hide the modal from screen readers
+            modal.setAttribute('aria-hidden', 'true')
+            // Remove the `show` class from the backdrop
+            backdrop.classList.remove('show')
+            // Remove the `show` class from the modal
+            modal.classList.remove('show')
+            // Change the modal `display` style to `none`
+            modal.style.display = 'none'
+            // Remove the backdrop div from the body
+            backdrop.remove();*/
+
+            // location.reload()
           }
           else {
             email.style.display = "none"
@@ -151,57 +163,35 @@ export default {
         })
     },
     logout() {
-      const path = `${httpUrl}/logout`
-      console.log(this.userStatus)
-      axios.post(path, this.userStatus)
-        .then((res) => {
-          if(res.data.status === "success") {
-            location.reload()
-          }
-          else {
-            console.error(res)
-          }
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-    /*
-        $.ajax({
-            url: "{{ url_for('index.logout') }}",
-            type: "GET",
-            dataType: 'json',
-            success: function(e) {
-                if(e.status === "success") {
-                    location.href = "{{ url_for("index.index") }}";
-                }
-            },
-            error: function() {
-                alert('500 服务器内部问题，加载失败');
-            }
-        });
-    */
+      localStorage.removeItem('token')
+      this.userName = '未登录'
+      this.userStatus = null
+
+      this.block_toggle()
+      this.push('Index')
     },
   },
   created() {
-    this.getUserStatus()
+    if(localStorage.getItem('token') !== null) {
+      try {
+        this.userStatus = jwtDecode(localStorage.getItem('token'))
+        if(this.userStatus.nickname !== null)
+          this.userName = this.userStatus.nickname
+        else
+          this.userName = this.userStatus.user_name
+      }
+      catch {
+        alert('你这个用户不乖哦~居然私自篡改token！不过我全部防出去，防出去了嗷（马保国并感')
+        localStorage.removeItem('token')
+      }
+    }
   },
   mounted() {
-    const this_ = this
-    const login_block = this.$refs.login_side_block
-    const login_tab = this.$refs.login_tab
-    login_block.style.display = "none"
-    login_tab.addEventListener("click", function() {
-      if(this_.user === null)
-        return
-      if(login_block.style.display === "none")
-        login_block.style.display = "block"
-      else
-        login_block.style.display = "none"
-    })
+    this.block_init()
 
     /*const ap = */
     new APlayer({
-      container: this_.$refs.a_player,
+      container: this.$refs.a_player,
       fixed: true,
       autoplay: true,
       /*audio: [
@@ -243,7 +233,8 @@ export default {
     cursor: pointer;
 }
 .header-tab {
-    height: 50px
+    height: 50px;
+    overflow: hidden;
 }
 .header-tab:hover {
     background: linear-gradient(black 80%, grey);
