@@ -67,11 +67,12 @@
       </div>
     </div>
   </div>
-  <router-view v-slot="{ Component }">
+  <!--<router-view v-slot="{ Component }">
     <keep-alive>
       <component :is="Component" />
     </keep-alive>
-  </router-view>
+  </router-view>-->
+  <router-view></router-view>
   <div ref="a_player"></div>
 </template>
 

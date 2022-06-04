@@ -56,23 +56,25 @@
           </div>
           <div class="row tab-block">
             <div class="col-12 block_background">
-                <div class="container pt-5">
-                    <h4>发布博客</h4>
-                    <hr>
-                    <form id="blog_form" method="post" enctype="multipart/form-data" onsubmit="submit_blog(); return false">
-                        <div class="mb-3">
-                            <label for="blog_title" class="form-label">博客标题</label>
-                            <input class="form-control" type="text" id="blog_title" name="blog_title">
-                        </div>
-                        <div class="mb-3">
-                            <label for="form_file" class="form-label">请上传markdown(.md)文件</label>
-                            <input class="form-control" type="file" id="form_file" name="form_file" accept=".md">
-                        </div>
-                        <button type="submit" class="btn btn-outline-primary btn-sm">提交</button>
-                    </form>
-                </div>
-                <div class="container pt-5">
-                </div>
+              <div class="container pt-5">
+                <h4>发布博客</h4>
+                <hr>
+                <form id="blog_form" @submit.prevent novalidate>
+                  <div class="mb-3">
+                    <label for="blog_title" class="form-label">博客标题</label>
+                    <input class="form-control" type="text" id="blog_title" ref="blog_title" name="blog_title" aria-describedby="blog_title_feedback" required>
+                    <div id="blog_title_feedback" ref="blog_title_feedback" class="invalid-feedback"></div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="form_file" class="form-label">请上传markdown(.md)文件</label>
+                    <input class="form-control" type="file" id="form_file" ref="form_file" name="form_file" accept=".md" aria-describedby="form_file_feedback" required>
+                    <div id="form_file_feedback" ref="form_file_feedback" class="invalid-feedback"></div>
+                  </div>
+                  <button class="btn btn-outline-primary btn-sm" @click="submitBlog()">提交</button>
+                </form>
+              </div>
+              <div class="container pt-5">
+              </div>
             </div>
           </div>
         </div>
@@ -82,9 +84,9 @@
 </template>
 
 <script>
-import jwtDecode from "jwt-decode";
-import axios from "axios";
-import global from "@/App";
+import jwtDecode from "jwt-decode"
+import axios from "axios"
+import global from "@/App"
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -139,9 +141,9 @@ export default {
         })
           .then((res) => {
             if(res.data.status === "success") {
-              this.$refs.old_password.value = ""
-              this.$refs.new_password.value = ""
-              this.$refs.new_password2.value = ""
+              old_password.value = ""
+              new_password.value = ""
+              new_password2.value = ""
               old_password.classList.add('is-valid')
               new_password.classList.add('is-valid')
               new_password2.classList.add('is-valid')
@@ -164,7 +166,63 @@ export default {
             console.error(error)
           })
       }
-    }
+    },
+    submitBlog() {
+      const blog_title = this.$refs.blog_title, form_file = this.$refs.form_file
+      const blog_title_feedback = this.$refs.blog_title_feedback, form_file_feedback = this.$refs.form_file_feedback
+      blog_title.classList.remove('is-valid')
+      form_file.classList.remove('is-valid')
+      blog_title.classList.remove('is-invalid')
+      form_file.classList.remove('is-invalid')
+
+      let form = document.getElementById('blog_form')
+      let formData = new FormData(form)
+      if(formData.get('blog_title') === "") {
+        blog_title_feedback.innerText = "输入不能为空"
+        blog_title.classList.add('is-invalid')
+      }
+      else if(formData.get('form_file').name === "") {
+        form_file_feedback.innerText = "文件不能为空"
+        form_file.classList.add('is-invalid')
+      }
+      else if(formData.get('form_file').name.slice(-3) !== ".md") {
+        form_file_feedback.innerText = "文件类型错误"
+        form_file.classList.add('is-invalid')
+      }
+      else {
+        blog_title.value = ""
+        form_file.value = ""
+        blog_title.classList.add('is-valid')
+        form_file.classList.add('is-valid')
+        const path = `${this.httpUrl}/upload_blog`
+        axios.post(path, formData, {
+          // headers: { 'Content-Type': 'multipart/form-data' },
+          transformRequest: [function (data, headers) {
+            // Do whatever you want to transform the data
+            // console.log(headers.post)
+            delete headers.post['Content-Type'];
+            delete headers.get['Content-Type'];
+            delete headers.common['Content-Type'];
+            // console.log(headers.post)
+
+            return data;
+          }],
+        })
+          .then((res) => {
+            if(res.data.status === "success") {
+              alert("上传成功！");
+            }
+            else {
+              if(res.data.msg === "database_full") {
+                alert("服务器爆满！请删除一些博客文章，或者拓容~");
+              }
+            }
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+      }
+    },
   },
   created() {
     this.userStatus = jwtDecode(localStorage.token)
@@ -210,26 +268,6 @@ export default {
         }
       })
     }
-
-    /*function submit_blog() {
-        var formData = new FormData(document.getElementById('blog_form'));
-        console.log(formData.get('form_file'));
-        $.ajax({
-            url: "{{ url_for('personal.upload_blog') }}",
-            type: "POST",
-            data: formData,
-            cache: false,
-            contentType: false,
-            processData: false,
-            dataType: 'json',
-            success: function(e) {
-                alert(e['status']);
-            },
-            error: function() {
-                console.log('服务器内部出错');
-            }
-        });
-    }*/
   },
   beforeRouteEnter(to, from, next) {
     if(localStorage.getItem('token') !== null)
@@ -238,14 +276,6 @@ export default {
       console.log("请求被拦截")
       //this_.$router.push({ name: name })
   },
-  deactivated() {
-    this.$refs.old_password.value = ""
-    this.$refs.new_password.value = ""
-    this.$refs.new_password2.value = ""
-    this.$refs.old_password.classList.remove('is-invalid')
-    this.$refs.new_password.classList.remove('is-invalid')
-    this.$refs.new_password2.classList.remove('is-invalid')
-  }
 }
 </script>
 
