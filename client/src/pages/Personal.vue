@@ -86,14 +86,13 @@
 <script>
 import jwtDecode from "jwt-decode"
 import axios from "axios"
-import global from "@/App"
 
 export default {
+  inject: ["httpUrl"],
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Personal",
   data() {
     return {
-      httpUrl: global.httpUrl,
       userStatus: null,
       screenWidth: 0,
       screenHeight: 0,

@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid home">
-    <div class="container">
+    <div class="container text-center">
       <div class="row">
         <div class="col-3 block_background">
           <announcement></announcement>
@@ -12,7 +12,7 @@
       </div>
     </div>
   </div>
-  <div class="container" style="padding-top: 50px">
+  <div class="container text-center" style="padding-top: 50px">
     <div class="offset-3 col-6">
       <div class="row">
         <div class="offset-1 col-10 block_background">
@@ -23,6 +23,7 @@
               </thead>
               <tbody id="index_blog_list" ref="index_blog_list">
                 <tr v-if="blogs_num === null"><td>服务器内部错误</td></tr>
+                <tr v-if="blogs_num === 0"><td>主人目前还没有文章哦~</td></tr>
                 <tr v-for="b in blogs" :key="b.create_time">
                   <td style="padding: 30px 0">
                     <p class="fs-1 fw-bold">{{ b.blog_title }}</p>
@@ -31,7 +32,10 @@
                       <div v-html="b.content"></div>
                     </div>
                     <br>
-                    <p class="fs-6 fw-light text-secondary text-end">发布于 {{ b.create_time }}</p>
+                    <p class="fs-6 fw-light text-secondary text-end">
+                      <span v-if="userStatus != null && userStatus.authority === 3">&nbsp;<u class="link-text" @click="deleteBlog(b.blog_filename)">删除</u>&nbsp;|&nbsp;</span>
+                      发布于 {{ b.create_time }}
+                    </p>
                   </td>
                 </tr>
               </tbody>
@@ -49,15 +53,16 @@ import Announcement from "@/components/Announcement";
 import ClockMaster from "@/components/ClockMaster";
 import Divination from "@/components/Divination";
 import axios from "axios";
-import global from "@/App";
+import jwtDecode from "jwt-decode";
 
 export default {
+  inject: ["httpUrl"],
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Index",
   components: { Divination, ClockMaster, Announcement },
   data() {
     return {
-      httpUrl: global.httpUrl,
+      userStatus: null,
       td_width: 0,
       blogs_num: 0,
       blogs: [],
@@ -88,6 +93,36 @@ export default {
           console.error(error)
           this.blogs_num = null
         })
+    },
+    deleteBlog(blog_filename) {
+      const path = `${this.httpUrl}/delete_blog`
+      axios.post(path, {
+        'blog_filename': blog_filename,
+      })
+        .then((res) => {
+          if(res.data.status === 'success')
+            alert('删除成功')
+          else
+            alert('博客已删除')
+          this.$router.push({ name: 'RefreshMedia' })
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
+  },
+  created() {
+    if(localStorage.getItem('token') !== null) {
+      try {
+        this.userStatus = jwtDecode(localStorage.getItem('token'))
+        if(this.userStatus.nickname !== null)
+          this.userName = this.userStatus.nickname
+        else
+          this.userName = this.userStatus.user_name
+      }
+      catch {
+        localStorage.removeItem('token')
+      }
     }
   },
   mounted() {
@@ -116,5 +151,9 @@ export default {
 }
 .block_background {
   background: rgba(255, 255, 255, 0.8);
+}
+.link-text:hover {
+  cursor: pointer;
+  color: blue;
 }
 </style>

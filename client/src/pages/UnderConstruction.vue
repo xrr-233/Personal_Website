@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid home"></div>
-  <div class="container block_background" style="padding-top: 50px">敬请期待</div>
+  <div class="container block_background text-center" style="padding-top: 50px">敬请期待</div>
 </template>
 
 <script>

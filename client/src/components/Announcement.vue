@@ -8,10 +8,10 @@
       </thead>
       <tbody>
         <tr>
-          <td><div class="text">我一定要写出网页！</div></td>
+          <td><div class="text">本人个人网站开启经过多月开发终于开启</div></td>
         </tr>
         <tr>
-          <td><div class="text">该死的阿里云赶快给我认证通过！</div></td>
+          <td><div class="text">公告栏功能尚未实现</div></td>
         </tr>
         <tr><td><div class="text">&nbsp;</div></td></tr>
         <tr><td><div class="text">&nbsp;</div></td></tr>

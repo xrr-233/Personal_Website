@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import "../assets/css/font.css"
+import "@/assets/css/font.css"
 
 export default {
   name: "ClockMaster",
@@ -216,7 +216,7 @@ export default {
       displayCurrentTime()
     },*/
   },
-  activated() {
+  mounted() {
     this.resetClock()
     this.getCurrentTime()
     this.displayCurrentTime()
@@ -226,7 +226,7 @@ export default {
       this.displayCurrentTime()
     }, 1000)
   },
-  deactivated() {
+  unmounted() {
     clearInterval(this.timer)
   }
 }

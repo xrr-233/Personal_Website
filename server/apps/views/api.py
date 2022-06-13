@@ -74,12 +74,35 @@ def ask_for_blogs():
             with open(os.getcwd() + url_for('static', filename=f'blog/{blog_articles_list[i].blog_filename}.md'), 'r') as f:
                 content = f.read()
             res['blogs'].append({
+                'blog_filename': blog_articles_list[i].blog_filename,
                 'blog_title': blog_articles_list[i].blog_title,
                 'create_time': blog_articles_list[i].create_time.strftime('%Y-%m-%d %H:%M:%S'),
                 'content': content,
             })
         except:
             res.update({'error': 'critical'})
+
+    return json.dumps(res)
+
+@api.route('/delete_blog', methods=['GET', 'POST'])
+def delete_blog():
+    blog_filename = request.json.get('blog_filename')
+
+    blog_articles = BlogArticle.query.filter_by(blog_filename=blog_filename)
+    blog_article = None
+    for b in blog_articles:
+        blog_article = b
+
+    res = {
+        'status': 'success',
+    }
+    if(blog_article == None):
+        res.update({
+            'status': failure
+        })
+    else:
+        db.session.delete(blog_article)
+        db.session.commit()
 
     return json.dumps(res)
 

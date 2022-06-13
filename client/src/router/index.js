@@ -27,6 +27,11 @@ const routes = [
     path: '/personal',
     name: 'Personal',
     component: () => import('@/pages/Personal.vue'),
+  },
+  {
+    path: '/refresh_media',
+    name: 'RefreshMedia',
+    component: () => import('@/pages/RefreshMedia.vue'),
   }
 ]
 
