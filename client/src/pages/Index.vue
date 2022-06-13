@@ -22,7 +22,16 @@
                 <tr><th scope="col">&#127774;博客</th></tr>
               </thead>
               <tbody id="index_blog_list" ref="index_blog_list">
-                <tr v-if="blogs_num === null"><td>服务器内部错误</td></tr>
+                <tr v-if="blogs_num === null">
+                  <td v-if="userStatus != null && userStatus.authority === 3">
+                    服务器内部错误，请检查：<br>
+                    1. 是否开启Flask服务器 <br>
+                    2. 如已开启，请检查'/static/blog'中文件是否与数据库中文件匹配 <br>
+                  </td>
+                  <td v-else>
+                    服务器内部错误，请联系管理员
+                  </td>
+                </tr>
                 <tr v-if="blogs_num === 0"><td>主人目前还没有文章哦~</td></tr>
                 <tr v-for="b in blogs" :key="b.create_time">
                   <td style="padding: 30px 0">

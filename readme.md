@@ -117,3 +117,19 @@ https://myapollo.com.tw/zh-tw/python-json-web-token/
 + 2022/6/13
 
 实现博客文章删除并修复时钟错位，等待部署
+
+部署操作：
+
+Vue前端：
+
+npm run build
+
+将dist文件夹内所有文件拷贝到'/var/www/html'
+
+按照https://zhuanlan.zhihu.com/p/103244419所示配置nginx
+
+Flask后端：
+
+gunicorn -D -w 1 -b 0.0.0.0:5000 app:app
+
+重要：由于最终没有选择将博客内容推至服务器中，从今以后请确保每次push之前先将服务器中博客文档push妥善
