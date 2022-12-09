@@ -1,19 +1,17 @@
-import datetime
+from datetime import datetime
 import json
-import os
 import jwt
+import os
 from hashlib import sha256
 
-from flask import Blueprint, jsonify, request, url_for
-from ext import db
-
-from apps.models.blog_article import BlogArticle
-from apps.models.user_account import UserAccount
-from apps.models.system_status import SystemStatus
-from config import SECRET
+from flask import Blueprint, request, url_for
 from werkzeug.utils import secure_filename
 
+from apps.models import *
+from config import SECRET
+
 api = Blueprint('index', __name__)
+
 
 @api.route('/login', methods=['GET', 'POST'])
 def login():
@@ -28,12 +26,12 @@ def login():
     res = {
         'status': 'success',
     }
-    if(user == None):
+    if (user == None):
         res.update({
             'status': 'failure',
             'msg': 'user_not_exist',
         })
-    elif(user.password != sha256(password.encode('utf-8')).hexdigest()):
+    elif (user.password != sha256(password.encode('utf-8')).hexdigest()):
         res.update({
             'status': 'failure',
             'msg': 'wrong_password',
@@ -53,6 +51,36 @@ def login():
 
     return json.dumps(res)
 
+
+@api.route('/ask_for_blog_titles', methods=['GET', 'POST'])
+def ask_for_blog_titles():
+    max_title_num = int(request.json.get('max_title_num'))
+
+    blog_articles = BlogArticle.query.all()
+    blog_articles_list = []
+    for b in blog_articles:
+        blog_articles_list.append(b)
+    blog_articles_list.reverse()
+
+    res = {
+        'number': len(blog_articles_list),
+        'error': None,
+        'blogs': [],
+    }
+    for i in range(0, min(max_title_num, len(blog_articles_list))):
+        try:
+            with open(os.getcwd() + url_for('static', filename=f'blog/{blog_articles_list[i].blog_filename}.md'),
+                      'r') as f:
+                res['blogs'].append({
+                    'blog_title': blog_articles_list[i].blog_title,
+                    'create_time': blog_articles_list[i].create_time.strftime('%Y-%m-%d %H:%M:%S'),
+                })
+        except:
+            res.update({'error': 'critical'})
+
+    return json.dumps(res)
+
+
 @api.route('/ask_for_blogs', methods=['GET', 'POST'])
 def ask_for_blogs():
     start_page = int(request.json.get('start_page'))
@@ -71,7 +99,8 @@ def ask_for_blogs():
     }
     for i in range((start_page - 1) * per_page, min(start_page * per_page - 1, len(blog_articles_list))):
         try:
-            with open(os.getcwd() + url_for('static', filename=f'blog/{blog_articles_list[i].blog_filename}.md'), 'r') as f:
+            with open(os.getcwd() + url_for('static', filename=f'blog/{blog_articles_list[i].blog_filename}.md'),
+                      'r') as f:
                 content = f.read()
             res['blogs'].append({
                 'blog_filename': blog_articles_list[i].blog_filename,
@@ -83,6 +112,7 @@ def ask_for_blogs():
             res.update({'error': 'critical'})
 
     return json.dumps(res)
+
 
 @api.route('/delete_blog', methods=['GET', 'POST'])
 def delete_blog():
@@ -96,15 +126,16 @@ def delete_blog():
     res = {
         'status': 'success',
     }
-    if(blog_article == None):
+    if (blog_article == None):
         res.update({
-            'status': failure
+            'status': 'failure'
         })
     else:
         db.session.delete(blog_article)
         db.session.commit()
 
     return json.dumps(res)
+
 
 @api.route('/change_password', methods=['GET', 'POST'])
 def change_password():
@@ -136,6 +167,7 @@ def change_password():
 
     return json.dumps(res)
 
+
 @api.route('/upload_blog', methods=['GET', 'POST'])
 def upload_blog():
     blog_title = request.form.get('blog_title')
@@ -150,20 +182,21 @@ def upload_blog():
     for s in system_status_:
         system_status = s
 
-    if(system_status.blog_num >= 100000):
+    if (system_status.blog_num >= 100000):
         res.update({
             'status': 'failure',
             'msg': 'database_full',
         })
     else:
         base_path = os.path.dirname(__file__)
-        upload_path = os.path.join(base_path, f'{os.getcwd()}/static/blog', secure_filename(f'{str(system_status.blog_ptr).zfill(5)}.md'))
+        upload_path = os.path.join(base_path, f'{os.getcwd()}/static/blog',
+                                   secure_filename(f'{str(system_status.blog_ptr).zfill(5)}.md'))
         form_file.save(upload_path)
 
         blog_article = BlogArticle()
         blog_article.blog_filename = str(system_status.blog_ptr).zfill(5)
         blog_article.blog_title = blog_title
-        blog_article.create_time = datetime.datetime.now()
+        blog_article.create_time = datetime.now()
         db.session.add(blog_article)
 
         system_status.blog_num += 1
@@ -172,7 +205,7 @@ def upload_blog():
         blog_article_ = BlogArticle.query.filter_by(blog_filename=str(system_status.blog_ptr).zfill(5))
         for b in blog_article_:
             flag = True
-        while(system_status.blog_ptr > 99999 or flag):
+        while (system_status.blog_ptr > 99999 or flag):
             system_status.blog_ptr += 1
             flag = False
             blog_article_ = BlogArticle.query.filter_by(blog_filename=str(system_status.blog_ptr).zfill(5))
@@ -180,5 +213,49 @@ def upload_blog():
                 flag = True
 
         db.session.commit()
+
+    return json.dumps(res)
+
+@api.route('/ask_for_announcement_titles', methods=['GET', 'POST'])
+def ask_for_announcement_titles():
+    max_title_num = int(request.json.get('max_title_num'))
+
+    announcements = Announcement.query.all()
+    announcements_list = []
+    for a in announcements:
+        announcements_list.append(a)
+    announcements_list.reverse()
+
+    res = {
+        'number': len(announcements_list),
+        'error': None,
+        'announcements': [],
+    }
+    for i in range(0, min(max_title_num, len(announcements_list))):
+        try:
+            res['announcements'].append({
+                'announcement_title': announcements_list[i].announcement_title,
+                'create_time': announcements_list[i].create_time.strftime('%Y-%m-%d %H:%M:%S'),
+            })
+        except:
+            res.update({'error': 'critical'})
+
+    return json.dumps(res)
+
+@api.route('/upload_announcement', methods=['GET', 'POST'])
+def upload_announcement():
+    announcement_title = request.form.get('announcement_title')
+    form_content = request.form.get('form_content')
+
+    res = {
+        'status': 'success',
+    }
+
+    announcement = Announcement()
+    announcement.announcement_title = announcement_title
+    announcement.announcement_content = form_content
+    announcement.create_time = datetime.now()
+    db.session.add(announcement)
+    db.session.commit()
 
     return json.dumps(res)

@@ -1,54 +1,55 @@
 <template>
-  <div class="container-fluid home">
+  <div class="container-fluid home position-fixed"></div>
+  <div class="container-fluid" style="padding-top: 50px">
     <div class="container text-center">
-      <div class="row">
-        <div class="col-3 block_background">
-          <announcement></announcement>
-          <clock-master></clock-master>
+      <div class="row g-1">
+        <div class="col-3">
+          <div class="row">
+            <div class="container block_background">
+              <announcement></announcement>
+              <clock-master></clock-master>
+              <divination></divination>
+            </div>
+          </div>
         </div>
-        <div class="offset-6 col-3 block_background">
-          <divination></divination>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="container text-center" style="padding-top: 50px">
-    <div class="offset-3 col-6">
-      <div class="row">
-        <div class="offset-1 col-10 block_background">
-          <div class="container">
-            <table class="table">
-              <thead>
-                <tr><th scope="col">&#127774;博客</th></tr>
-              </thead>
-              <tbody id="index_blog_list" ref="index_blog_list">
-                <tr v-if="blogs_num === null">
-                  <td v-if="userStatus != null && userStatus.authority === 3">
-                    服务器内部错误，请检查：<br>
-                    1. 是否开启Flask服务器 <br>
-                    2. 如已开启，请检查'/static/blog'中文件是否与数据库中文件匹配 <br>
-                  </td>
-                  <td v-else>
-                    服务器内部错误，请联系管理员
-                  </td>
-                </tr>
-                <tr v-if="blogs_num === 0"><td>主人目前还没有文章哦~</td></tr>
-                <tr v-for="b in blogs" :key="b.create_time">
-                  <td style="padding: 30px 0">
-                    <p class="fs-1 fw-bold">{{ b.blog_title }}</p>
-                    <div class="blog text-start" :style="{ width: td_width + 'px', wordWrap: 'break-word' }">
-                    <!--<div class="blog text-start" :style="`width: ${td_width}px; word-wrap: break-word`">-->
-                      <div v-html="b.content"></div>
-                    </div>
-                    <br>
-                    <p class="fs-6 fw-light text-secondary text-end">
-                      <span v-if="userStatus != null && userStatus.authority === 3">&nbsp;<u class="link-text" @click="deleteBlog(b.blog_filename)">删除</u>&nbsp;|&nbsp;</span>
-                      发布于 {{ b.create_time }}
-                    </p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="col-9">
+          <div class="row">
+            <div class="offset-1 col-10 block_background">
+              <div class="container">
+                <table class="table">
+                  <thead>
+                    <tr><th scope="col">&#127774;博客</th></tr>
+                  </thead>
+                  <tbody id="index_blog_list" ref="index_blog_list">
+                    <tr v-if="blogs_num === null">
+                      <td v-if="userStatus != null && userStatus.authority === 3">
+                        服务器内部错误，请检查：<br>
+                        1. 是否开启Flask服务器 <br>
+                        2. 如已开启，请检查'/static/blog'中文件是否与数据库中文件匹配 <br>
+                      </td>
+                      <td v-else>
+                        服务器内部错误，请联系管理员
+                      </td>
+                    </tr>
+                    <tr v-if="blogs_num === 0"><td>主人目前还没有文章哦~</td></tr>
+                    <tr v-for="b in blogs" :key="b.create_time">
+                      <td style="padding: 30px 0">
+                        <p class="fs-1 fw-bold">{{ b.blog_title }}</p>
+                        <div class="blog text-start" :style="{ width: td_width + 'px', wordWrap: 'break-word' }">
+                        <!--<div class="blog text-start" :style="`width: ${td_width}px; word-wrap: break-word`">-->
+                          <div v-html="b.content"></div>
+                        </div>
+                        <br>
+                        <p class="fs-6 fw-light text-secondary text-end">
+                          <span v-if="userStatus != null && userStatus.authority === 3">&nbsp;<u class="link-text" @click="deleteBlog(b.blog_filename)">删除</u>&nbsp;|&nbsp;</span>
+                          发布于 {{ b.create_time }}
+                        </p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ export default {
   components: { Frame },
   provide() {
     return {
-      httpUrl: 'http://***:5000',
+      httpUrl: 'http://***:***',
     }
   },
   mounted() {

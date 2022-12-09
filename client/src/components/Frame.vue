@@ -6,10 +6,10 @@
         <div class="col-1">
           <div class="mx-auto logo" @click="push('Index')"></div>
         </div>
-        <div class="offset-2 col-1 header-tab" @click="push('UnderConstruction')">博客</div>
-        <div class="col-1 header-tab" @click="push('UnderConstruction')">作品</div>
+        <div class="offset-2 col-1 header-tab" @click="push('UnderConstruction')">作品</div>
         <div class="col-1 header-tab" @click="push('UnderConstruction')">空间</div>
         <div class="col-1 header-tab" @click="push('UnderConstruction')">工具</div>
+        <div class="col-1 header-tab" @click="push('UnderConstruction')">日志</div>
         <div class="offset-2 col-3 position-relative">
           <button class="btn dropdown-toggle" ref="login_tab" id="login_tab" data-toggle="dropdown" style="color: white">
             {{ userName }}
