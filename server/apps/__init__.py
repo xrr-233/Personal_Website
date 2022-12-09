@@ -10,7 +10,8 @@ def create_app():
     app.config.from_object(config.DeveplomentConfig)
     app.register_blueprint(api)
 
-    CORS(app, resources={r'/*': {'origins': '*'}})
+    # CORS(app, resources={r'/*': {'origins': '*'}})
+    CORS(app)
 
     with app.app_context():
         ext.db.init_app(app)
