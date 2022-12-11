@@ -8,6 +8,17 @@ const routes = [
     component: Index,
   },
   {
+    path: '/gallery',
+    name: 'Gallery',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import('@/pages/Gallery.vue'),
+    meta: {
+      title: "xrr的作品集"
+    }
+  },
+  {
     path: '/space',
     name: 'Space',
     // route level code-splitting

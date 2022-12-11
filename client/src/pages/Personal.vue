@@ -331,7 +331,7 @@ export default {
 .home {
   height: 100%;
   width: 100%;
-  background-image: url("../../public/index-background.jpg");
+  background-image: url("@/assets/imgs/index-background.jpg");
   background-size: cover;
   z-index: -1;
 }

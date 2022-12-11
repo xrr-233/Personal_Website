@@ -6,7 +6,7 @@
         <div class="col-1">
           <div class="mx-auto logo" @click="push('Index')"></div>
         </div>
-        <div class="offset-2 col-1 header-tab" @click="push('UnderConstruction')">作品</div>
+        <div class="offset-2 col-1 header-tab" @click="push('Gallery')">作品</div>
         <div class="col-1 header-tab" @click="push('UnderConstruction')">空间</div>
         <div class="col-1 header-tab" @click="push('UnderConstruction')">工具</div>
         <div class="col-1 header-tab" @click="push('UnderConstruction')">日志</div>
@@ -24,7 +24,7 @@
               <div v-else>
                 <div class="row">
                   <div class="offset-2 col-4">
-                    <img src="@/assets/xrr.jpg" alt="xrr" class="img-fluid rounded-circle">
+                    <img src="@/assets/imgs/xrr.jpg" alt="xrr" class="img-fluid rounded-circle">
                   </div>
                   <div class="col-4" style="line-height: 50px">
                     <b style="color: black">{{ userName }}</b>
@@ -201,10 +201,10 @@ export default {
 .logo {
     height: 50px;
     width: 50px;
-    background-image: url("@/../public/logo.png");
+    background-image: url("@/assets/imgs/logo.png");
 }
 .logo:hover {
-    background-image: url("@/../public/logo-hover.png");
+    background-image: url("@/assets/imgs/logo-hover.png");
     cursor: pointer;
 }
 .header-tab {
