@@ -1,10 +1,10 @@
 from datetime import datetime
-import json
 import jwt
 import os
+import base64
 from hashlib import sha256
 
-from flask import Blueprint, request, url_for
+from flask import Blueprint, request, url_for, jsonify
 from werkzeug.utils import secure_filename
 
 from apps.models import *
@@ -45,11 +45,40 @@ def login():
             'authority': user.authority,
         }
         token = jwt.encode(payload, SECRET, algorithm='HS256')
-        res.update({
-            'token': token
-        })
+        res.update({'token': token})
 
-    return json.dumps(res)
+    return jsonify(res)
+
+
+@api.route('/change_password', methods=['GET', 'POST'])
+def change_password():
+    email = request.json.get('email')
+    old_password = request.json.get('old_password')
+    new_password = request.json.get('new_password')
+
+    users = UserAccount.query.filter_by(email=email)
+    user = None
+    for u in users:
+        user = u
+
+    res = {
+        'status': 'success',
+    }
+    if (user == None):
+        res.update({
+            'status': 'failure',
+            'msg': 'user_not_exist',
+        })
+    elif (user.password != sha256(old_password.encode('utf-8')).hexdigest()):
+        res.update({
+            'status': 'failure',
+            'msg': 'wrong_password',
+        })
+    else:
+        user.password = sha256(new_password.encode('utf-8')).hexdigest()
+        db.session.commit()
+
+    return jsonify(res)
 
 
 @api.route('/ask_for_blog_titles', methods=['GET', 'POST'])
@@ -78,7 +107,7 @@ def ask_for_blog_titles():
         except:
             res.update({'error': 'critical'})
 
-    return json.dumps(res)
+    return jsonify(res)
 
 
 @api.route('/ask_for_blogs', methods=['GET', 'POST'])
@@ -111,7 +140,7 @@ def ask_for_blogs():
         except:
             res.update({'error': 'critical'})
 
-    return json.dumps(res)
+    return jsonify(res)
 
 
 @api.route('/delete_blog', methods=['GET', 'POST'])
@@ -134,38 +163,7 @@ def delete_blog():
         db.session.delete(blog_article)
         db.session.commit()
 
-    return json.dumps(res)
-
-
-@api.route('/change_password', methods=['GET', 'POST'])
-def change_password():
-    email = request.json.get('email')
-    old_password = request.json.get('old_password')
-    new_password = request.json.get('new_password')
-
-    users = UserAccount.query.filter_by(email=email)
-    user = None
-    for u in users:
-        user = u
-
-    res = {
-        'status': 'success',
-    }
-    if (user == None):
-        res.update({
-            'status': 'failure',
-            'msg': 'user_not_exist',
-        })
-    elif (user.password != sha256(old_password.encode('utf-8')).hexdigest()):
-        res.update({
-            'status': 'failure',
-            'msg': 'wrong_password',
-        })
-    else:
-        user.password = sha256(new_password.encode('utf-8')).hexdigest()
-        db.session.commit()
-
-    return json.dumps(res)
+    return jsonify(res)
 
 
 @api.route('/upload_blog', methods=['GET', 'POST'])
@@ -214,7 +212,8 @@ def upload_blog():
 
         db.session.commit()
 
-    return json.dumps(res)
+    return jsonify(res)
+
 
 @api.route('/ask_for_announcement_titles', methods=['GET', 'POST'])
 def ask_for_announcement_titles():
@@ -240,7 +239,8 @@ def ask_for_announcement_titles():
         except:
             res.update({'error': 'critical'})
 
-    return json.dumps(res)
+    return jsonify(res)
+
 
 @api.route('/upload_announcement', methods=['GET', 'POST'])
 def upload_announcement():
@@ -258,4 +258,54 @@ def upload_announcement():
     db.session.add(announcement)
     db.session.commit()
 
-    return json.dumps(res)
+    return jsonify(res)
+
+
+@api.route('/get_collections', methods=['GET', 'POST'])
+def get_collections():
+    collections = Collection.query.all()
+    collections_list = []
+    for c in collections:
+        collections_list.append(c)
+    collections_list.reverse()
+
+    res = {
+        'number': len(collections_list),
+        'error': None,
+        'collections': [],
+    }
+    for i in range(0, len(collections_list)):
+        try:
+            res['collections'].append({
+                'id': collections_list[i].id,
+                'proj_title': collections_list[i].proj_title,
+                'proj_link': collections_list[i].proj_link,
+            })
+        except:
+            res.update({'error': 'critical'})
+
+    return jsonify(res)
+
+
+@api.route('/get_collection_img', methods=['GET', 'POST'])
+def get_collection_img():
+    id = int(request.json.get('id'))
+
+    collections = Collection.query.filter_by(id=id)
+    collection = None
+    for c in collections:
+        collection = c
+
+    res = {
+        'error': None,
+        'base64': None,
+    }
+    if (collection != None):
+        path = url_for('static', filename=f'imgs/collection/{collection.img_filename}.{collection.img_type}')
+        with open(f"{os.getcwd()}/{path}", "rb") as f:  # 转为二进制格式
+            base64_data = base64.b64encode(f.read())  # 使用base64进行加密
+        res.update({'base64': str(base64_data, encoding="utf-8")})
+    else:
+        res.update({'error': 'critical'})
+
+    return jsonify(res)

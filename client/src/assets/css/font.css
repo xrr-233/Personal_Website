@@ -2,3 +2,8 @@
  font-family: 'digital-7';
  src: url('../fonts/digital-7.ttf');
 }
+
+@font-face{
+ font-family: 'victoria';
+ src: url('../fonts/BLKCHCRY.ttf');
+}
