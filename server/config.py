@@ -1,3 +1,6 @@
+#!/usr/bin/python
+#-*-coding:GBK-*-
+
 SERVER = "localhost"
 DATABASE_USERNAME = "***"
 DATABASE_PASSWORD = "***"
