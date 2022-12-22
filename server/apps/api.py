@@ -1,11 +1,13 @@
-from datetime import datetime
 import jwt
 import os
 import base64
-from hashlib import sha256
+import eyed3
 
-from flask import Blueprint, request, url_for, jsonify
+from datetime import datetime
+from hashlib import sha256
+from flask import Blueprint, request, url_for, jsonify, Response
 from werkzeug.utils import secure_filename
+from io import BytesIO
 
 from apps.models import *
 from config import SECRET
@@ -309,3 +311,44 @@ def get_collection_img():
         res.update({'error': 'critical'})
 
     return jsonify(res)
+
+
+@api.route('/get_music_list')
+def get_music_list():
+    path = url_for('static', filename=f'music')
+    music_dir = os.listdir(f"{os.getcwd()}/{path}")
+    res = {
+        'music_list': []
+    }
+    for idx, file in enumerate(music_dir):
+        audiofile = eyed3.load(f"{os.getcwd()}/{path}/{file}")
+        audio_img = None
+        for image in audiofile.tag.images:
+            base64_data = base64.b64encode(image.image_data)
+            audio_img = base64_data
+        audiofile_info = {
+            'name': audiofile.tag.title,
+            'artist': audiofile.tag.artist,
+            'key': idx,
+            'cover': str(audio_img, encoding="utf-8")
+        }
+        res['music_list'].append(audiofile_info)
+
+    return jsonify(res)
+
+
+@api.route('/get_music/<key>')
+def get_music(key):
+    path = url_for('static', filename=f'music')
+    music_dir = os.listdir(f"{os.getcwd()}/{path}")
+
+    def generate():
+        for idx, file in enumerate(music_dir):
+            if(idx == int(key)):
+                with open(f"{os.getcwd()}/{path}/{file}", 'rb') as fmp3:
+                    data = fmp3.read(1024)
+                    while data:
+                        yield data
+                        data = fmp3.read(1024)
+
+    return Response(generate(), mimetype="audio/mp3")
