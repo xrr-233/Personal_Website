@@ -242,6 +242,8 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  user-select: none;
+  cursor: default;
 }
 h1 {
   font-size: 14px;
@@ -279,13 +281,13 @@ main.clock-display {
 .date-field div p {
 	font-size: 34px;
 	position: relative;
-	z-index: 100;
+	z-index: 2;
 }
 .date-field div p.placeholder_clock {
 	color: #2b2828;
 	position: absolute;
 	top: 0;
-	z-index: 50;
+	z-index: 1;
 }
 .date-field div.day-of-week-mobile {
   display: none;
@@ -344,13 +346,13 @@ main.clock-display {
 .clock-field div p {
 	font-size: 100px;
 	position: relative;
-	z-index: 100;
+	z-index: 2;
 }
 .clock-field .numbers .placeholder_clock {
 	color: #2b2828;
 	position: absolute;
 	top: 0;
-	z-index: 50;
+	z-index: 1;
 }
 .clock-field .numbers .type {
   font-size: 10px;

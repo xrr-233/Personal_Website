@@ -1,12 +1,14 @@
 <template>
   <div class="home_announcement">
-    <table class="table">
+    <table class="table" style="table-layout:fixed;">
       <thead>
         <tr><th scope="col">&#128226;公告栏</th></tr>
       </thead>
       <tbody>
         <tr v-if="announcements_num === 0"><td><div class="text">暂无公告</div></td></tr>
-        <tr v-else v-for="announcement in announcements" :key="announcement.announcement_title"><td><div class="text fw-bold"><u>{{ announcement.announcement_title }}</u></div></td></tr>
+        <tr v-else v-for="announcement in announcements" :key="announcement.announcement_title">
+          <td><div class="text fw-bold"><u>{{ announcement.announcement_title }}</u></div></td>
+        </tr>
         <tr v-if="announcements_num > max_title_num"><td><div class="fw-bold">查看更多</div></td></tr>
       </tbody>
     </table>
@@ -55,9 +57,9 @@ export default {
 </script>
 
 <style scoped>
-.text {
-  float: left;
-  white-space: nowrap;
+td {
+  text-align: left;
   overflow: hidden;
+  white-space: nowrap;
 }
 </style>

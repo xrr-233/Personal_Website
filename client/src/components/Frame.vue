@@ -196,7 +196,7 @@ export default {
     background: black;
     color: white;
     height: 50px;
-    z-index: 1;
+    z-index: 100;
 }
 .logo {
     height: 50px;

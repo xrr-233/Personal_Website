@@ -322,17 +322,17 @@ def get_music_list():
     }
     for idx, file in enumerate(music_dir):
         audiofile = eyed3.load(f"{os.getcwd()}/{path}/{file}")
-        audio_img = None
-        for image in audiofile.tag.images:
-            base64_data = base64.b64encode(image.image_data)
-            audio_img = base64_data
-        if(audio_img != None):
-            audio_img = str(audio_img, encoding="utf-8")
+        # audio_img = None
+        # for image in audiofile.tag.images:
+        #     base64_data = base64.b64encode(image.image_data)
+        #     audio_img = base64_data
+        # if(audio_img != None):
+        #     audio_img = str(audio_img, encoding="utf-8")
         audiofile_info = {
             'name': audiofile.tag.title,
             'artist': audiofile.tag.artist,
             'key': idx,
-            'cover': audio_img
+            # 'cover': audio_img,
         }
         res['music_list'].append(audiofile_info)
 
