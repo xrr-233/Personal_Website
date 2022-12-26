@@ -2,7 +2,7 @@
   <div class="home_announcement">
     <table class="table" style="table-layout:fixed;">
       <thead>
-        <tr><th scope="col">&#128226;公告栏</th></tr>
+        <tr><th scope="col">&#128226;公告</th></tr>
       </thead>
       <tbody>
         <tr v-if="announcements_num === 0"><td><div class="text">暂无公告</div></td></tr>
@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     askForAnnouncementTitles() {
-      const path = `${this.httpUrl}/ask_for_announcement_titles`
+      const path = `${this.httpUrl}/get_announcement_titles`
       axios.post(path, {
         'max_title_num': this.max_title_num,
       })

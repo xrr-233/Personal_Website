@@ -15,8 +15,18 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import('@/pages/Gallery.vue'),
     meta: {
-      title: "xrr的作品集"
+      title: "xrr的作品集",
     }
+  },
+  {
+    path: '/log',
+    name: 'Log',
+    component: () => import('@/pages/Log.vue'),
+  },
+  {
+    path: '/personal',
+    name: 'Personal',
+    component: () => import('@/pages/Personal.vue'),
   },
   {
     path: '/space',
@@ -26,18 +36,13 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import('@/pages/Space.vue'),
     meta: {
-      title: "xrr的空间"
+      title: "xrr的空间",
     }
   },
   {
     path: '/under_construction',
     name: 'UnderConstruction',
     component: () => import('@/pages/UnderConstruction.vue'),
-  },
-  {
-    path: '/personal',
-    name: 'Personal',
-    component: () => import('@/pages/Personal.vue'),
   },
   {
     path: '/refresh_media',

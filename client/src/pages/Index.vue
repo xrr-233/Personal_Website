@@ -82,7 +82,7 @@ export default {
     askForBlogs(start_page, per_page) {
       this.td_width = this.$refs.index_blog_list.offsetWidth
 
-      const path = `${this.httpUrl}/ask_for_blogs`
+      const path = `${this.httpUrl}/get_blogs`
       axios.post(path, {
         'start_page': start_page,
         'per_page': per_page
@@ -136,16 +136,8 @@ export default {
     }
   },
   mounted() {
-    this.askForBlogs(1, 10)
-    //
-    /*{% for i in range(blog_articles|length) %}
-        $("#index_blog_list").append(tr);
-        $.get('{{ url_for('static', filename='blog/' + blog_articles[i].blog_filename + '.md') }}', function(response, status, xhr){
-            $(".blog").eq({{ i }}).html(marked.parse(response));
-        });
-        //$(".blog").html("<h1>{{ i }}</h1>");
-    {% endfor %}*/
-  }
+    this.askForBlogs(1, 10);
+  },
 }
 </script>
 

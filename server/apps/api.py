@@ -83,8 +83,8 @@ def change_password():
     return jsonify(res)
 
 
-@api.route('/ask_for_blog_titles', methods=['GET', 'POST'])
-def ask_for_blog_titles():
+@api.route('/get_blog_titles', methods=['GET', 'POST'])
+def get_blog_titles():
     max_title_num = int(request.json.get('max_title_num'))
 
     blog_articles = BlogArticle.query.all()
@@ -100,7 +100,7 @@ def ask_for_blog_titles():
     }
     for i in range(0, min(max_title_num, len(blog_articles_list))):
         try:
-            with open(os.getcwd() + url_for('static', filename=f'blog/{blog_articles_list[i].blog_filename}.md'),
+            with open(os.getcwd() + url_for('static', filename=f'blogs/{blog_articles_list[i].blog_filename}.md'),
                       'r') as f:
                 res['blogs'].append({
                     'blog_title': blog_articles_list[i].blog_title,
@@ -112,8 +112,8 @@ def ask_for_blog_titles():
     return jsonify(res)
 
 
-@api.route('/ask_for_blogs', methods=['GET', 'POST'])
-def ask_for_blogs():
+@api.route('/get_blogs', methods=['GET', 'POST'])
+def get_blogs():
     start_page = int(request.json.get('start_page'))
     per_page = int(request.json.get('per_page'))
 
@@ -130,7 +130,7 @@ def ask_for_blogs():
     }
     for i in range((start_page - 1) * per_page, min(start_page * per_page - 1, len(blog_articles_list))):
         try:
-            with open(os.getcwd() + url_for('static', filename=f'blog/{blog_articles_list[i].blog_filename}.md'),
+            with open(os.getcwd() + url_for('static', filename=f'blogs/{blog_articles_list[i].blog_filename}.md'),
                       'r') as f:
                 content = f.read()
             res['blogs'].append({
@@ -189,7 +189,7 @@ def upload_blog():
         })
     else:
         base_path = os.path.dirname(__file__)
-        upload_path = os.path.join(base_path, f'{os.getcwd()}/static/blog',
+        upload_path = os.path.join(base_path, f'{os.getcwd()}/static/blogs',
                                    secure_filename(f'{str(system_status.blog_ptr).zfill(5)}.md'))
         form_file.save(upload_path)
 
@@ -217,8 +217,8 @@ def upload_blog():
     return jsonify(res)
 
 
-@api.route('/ask_for_announcement_titles', methods=['GET', 'POST'])
-def ask_for_announcement_titles():
+@api.route('/get_announcement_titles', methods=['GET', 'POST'])
+def get_announcement_titles():
     max_title_num = int(request.json.get('max_title_num'))
 
     announcements = Announcement.query.all()
@@ -354,3 +354,15 @@ def get_music(key):
                         data = fmp3.read(1024)
 
     return Response(generate(), mimetype="audio/mp3")
+
+@api.route('/get_log')
+def get_log():
+    res = { 'error': None }
+    try:
+        with open(os.getcwd() + url_for('static', filename=f'log.md'), 'r') as f:
+            content = f.read()
+            res.update({ 'content': content })
+    except:
+        res.update({ 'error': 'critical' })
+
+    return jsonify(res)

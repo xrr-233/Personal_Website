@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     askForBlogTitles() {
-      const path = `${this.httpUrl}/ask_for_blog_titles`
+      const path = `${this.httpUrl}/get_blog_titles`
       axios.post(path, {
         'max_title_num': this.max_title_num,
       })
