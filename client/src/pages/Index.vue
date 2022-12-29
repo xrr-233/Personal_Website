@@ -8,6 +8,7 @@
             <div class="container block_background">
               <announcement></announcement>
               <clock-master></clock-master>
+              <earth></earth>
               <divination></divination>
             </div>
           </div>
@@ -62,6 +63,7 @@ import { marked } from 'marked'
 import Announcement from "@/components/Announcement";
 import ClockMaster from "@/components/ClockMaster";
 import Divination from "@/components/Divination";
+import Earth from "@/components/Earth";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 
@@ -69,7 +71,7 @@ export default {
   inject: ["httpUrl"],
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Index",
-  components: { Divination, ClockMaster, Announcement },
+  components: { Announcement, ClockMaster, Divination, Earth },
   data() {
     return {
       userStatus: null,
@@ -157,5 +159,8 @@ export default {
 .link-text:hover {
   cursor: pointer;
   color: blue;
+}
+.blog:deep(img) {
+  width: 100%;
 }
 </style>
