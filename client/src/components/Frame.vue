@@ -67,6 +67,14 @@
       </div>
     </div>
   </div>
+  <div class="footer container-fluid text-center">
+    <p class="fw-light m-2">Portal</p>
+    <div class="portal align-self-center">
+      <a href="https://github.com/xrr-233" target="_blank"><div class="m-2 d-inline"><img src="@/assets/imgs/icon-github.png" alt="github"></div></a>
+      <a href="https://space.bilibili.com/11254045" target="_blank"><div class="m-2 d-inline"><img src="@/assets/imgs/icon-bilibili.png" alt="bilibili"></div></a>
+      <a href="https://www.zhihu.com/" target="_blank"><div class="m-2 d-inline"><img src="@/assets/imgs/icon-zhihu.png" alt="zhihu"></div></a>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -192,46 +200,66 @@ export default {
   color: #2c3e50;
 }
 .header {
-    position: fixed;
-    background: black;
-    color: white;
-    height: 50px;
-    z-index: 100;
+  position: fixed;
+  background: black;
+  color: white;
+  height: 50px;
+  z-index: 100;
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  background: black;
+  color: white;
+  height: 5px;
+  z-index: 100;
+}
+.footer:hover {
+  animation: footer-hover 0.5s ease;
+  animation-fill-mode: forwards;
+}
+@keyframes footer-hover
+{
+  from {height: 5px;}
+  to {height: 100px;}
 }
 .logo {
-    height: 50px;
-    width: 50px;
-    background-image: url("@/assets/imgs/logo.png");
+  height: 50px;
+  width: 50px;
+  background-image: url("@/assets/imgs/logo.png");
 }
 .logo:hover {
-    background-image: url("@/assets/imgs/logo-hover.png");
-    cursor: pointer;
+  background-image: url("@/assets/imgs/logo-hover.png");
+  cursor: pointer;
 }
 .header-tab {
-    height: 50px;
-    overflow: hidden;
+  height: 50px;
+  overflow: hidden;
 }
 .header-tab:hover {
-    background: linear-gradient(black 80%, grey);
-    background-size: 100% 200%;
-    height: 50px;
-    animation: header-tab-hover 0.5s ease;
-    animation-fill-mode: forwards;
-    cursor: pointer;
+  background: linear-gradient(black 80%, grey);
+  background-size: 100% 200%;
+  height: 50px;
+  animation: header-tab-hover 0.5s ease;
+  animation-fill-mode: forwards;
+  cursor: pointer;
 }
 .header-tab-pressed {
-    background: white;
-    color: black;
-    height: 50px;
+  background: white;
+  color: black;
+  height: 50px;
 }
 #login_side_block {
-    width: 100%;
-    margin: 5px;
-    display: none;
+  width: 100%;
+  margin: 5px;
+  display: none;
 }
 @keyframes header-tab-hover
 {
-    from {background-position: 0 0;}
-    to {background-position: 0 100%;}
+  from {background-position: 0 0;}
+  to {background-position: 0 100%;}
+}
+.portal img {
+  width: 50px;
 }
 </style>
