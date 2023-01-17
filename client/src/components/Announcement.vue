@@ -7,7 +7,11 @@
       <tbody>
         <tr v-if="announcements_num === 0"><td><div class="text">暂无公告</div></td></tr>
         <tr v-else v-for="announcement in announcements" :key="announcement.announcement_title">
-          <td><div class="text fw-bold"><u>{{ announcement.announcement_title }}</u></div></td>
+          <td>
+            <div class="announcement text fw-bold" v-on:click="chooseAnnouncement(announcement.id)">
+              <u>{{ announcement.announcement_title }}</u>
+            </div>
+          </td>
         </tr>
         <tr v-if="announcements_num > max_title_num"><td><div class="fw-bold">查看更多</div></td></tr>
       </tbody>
@@ -49,6 +53,9 @@ export default {
           this.announcements_num = null
         })
     },
+    chooseAnnouncement(id) {
+      this.$router.push({ path: `/announcement/${id}` })
+    },
   },
   mounted() {
     this.askForAnnouncementTitles();
@@ -61,5 +68,9 @@ td {
   text-align: left;
   overflow: hidden;
   white-space: nowrap;
+}
+.announcement:hover {
+  color: blue;
+  cursor: pointer;
 }
 </style>

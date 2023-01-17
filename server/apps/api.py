@@ -103,6 +103,7 @@ def get_blog_titles():
             with open(os.getcwd() + url_for('static', filename=f'blogs/{blog_articles_list[i].blog_filename}.md'),
                       'r') as f:
                 res['blogs'].append({
+                    'id': blog_articles_list[i].id,
                     'blog_title': blog_articles_list[i].blog_title,
                     'create_time': blog_articles_list[i].create_time.strftime('%Y-%m-%d %H:%M:%S'),
                 })
@@ -235,6 +236,7 @@ def get_announcement_titles():
     for i in range(0, min(max_title_num, len(announcements_list))):
         try:
             res['announcements'].append({
+                'id': announcements_list[i].id,
                 'announcement_title': announcements_list[i].announcement_title,
                 'create_time': announcements_list[i].create_time.strftime('%Y-%m-%d %H:%M:%S'),
             })

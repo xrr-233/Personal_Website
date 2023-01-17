@@ -48,7 +48,15 @@ const routes = [
     path: '/refresh_media',
     name: 'RefreshMedia',
     component: () => import('@/pages/RefreshMedia.vue'),
-  }
+  },
+  {
+    path: "/announcement/:id",
+    component: () => import('@/pages/IndependentPage.vue')
+  },
+  {
+    path: "/blog/:id",
+    component: () => import('@/pages/IndependentPage.vue')
+  },
 ]
 
 const router = createRouter({

@@ -36,8 +36,7 @@
                     <tr v-for="b in blogs" :key="b.create_time">
                       <td style="padding: 30px 0">
                         <p class="fs-1 fw-bold">{{ b.blog_title }}</p>
-                        <div class="blog text-start" :style="{ width: td_width + 'px', wordWrap: 'break-word' }">
-                        <!--<div class="blog text-start" :style="`width: ${td_width}px; word-wrap: break-word`">-->
+                        <div class="blog text-start" :style="`word-wrap: break-word`">
                           <div v-html="b.content"></div>
                         </div>
                         <br>
@@ -75,15 +74,12 @@ export default {
   data() {
     return {
       userStatus: null,
-      td_width: 0,
       blogs_num: 0,
       blogs: [],
     }
   },
   methods: {
     askForBlogs(start_page, per_page) {
-      this.td_width = this.$refs.index_blog_list.offsetWidth
-
       const path = `${this.httpUrl}/get_blogs`
       axios.post(path, {
         'start_page': start_page,

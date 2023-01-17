@@ -1,12 +1,18 @@
 <template>
   <div class="home_blog">
-    <table class="table">
+    <table class="table" style="table-layout:fixed;">
       <thead>
         <tr><th scope="col">&#127774;博客</th></tr>
       </thead>
-      <tbody id="my_table" ref="my_table">
+      <tbody>
         <tr v-if="blogs_num === 0"><td><div class="text">主人目前还没有文章哦~</div></td></tr>
-        <tr v-else v-for="blog in blogs" :key="blog.blog_title"><td><div class="text fw-bold"><u>{{ blog.blog_title }}</u></div></td></tr>
+        <tr v-else v-for="blog in blogs" :key="blog.blog_title">
+          <td>
+            <div class="blog text fw-bold" v-on:click="chooseBlog(blog.id)">
+              <u>{{ blog.blog_title }}</u>
+            </div>
+          </td>
+        </tr>
         <tr v-if="blogs_num > max_title_num"><td><div class="fw-bold">查看更多</div></td></tr>
       </tbody>
     </table>
@@ -47,6 +53,9 @@ export default {
           this.blogs_num = null
         })
     },
+    chooseBlog(id) {
+      this.$router.push({ path: `/blog/${id}` })
+    },
   },
   mounted() {
     this.askForBlogTitles();
@@ -55,9 +64,13 @@ export default {
 </script>
 
 <style scoped>
-.text {
-  float: left;
-  white-space: nowrap;
+td {
+  text-align: left;
   overflow: hidden;
+  white-space: nowrap;
+}
+.blog:hover {
+  color: blue;
+  cursor: pointer;
 }
 </style>
