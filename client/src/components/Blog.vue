@@ -54,7 +54,8 @@ export default {
         })
     },
     chooseBlog(id) {
-      this.$router.push({ path: `/blog/${id}` })
+      console.log(id)
+      this.$router.push({ name: 'UnderConstruction' })
     },
   },
   mounted() {

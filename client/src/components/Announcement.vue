@@ -54,7 +54,8 @@ export default {
         })
     },
     chooseAnnouncement(id) {
-      this.$router.push({ path: `/announcement/${id}` })
+      console.log(id)
+      this.$router.push({ name: 'UnderConstruction' })
     },
   },
   mounted() {
