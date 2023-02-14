@@ -8,7 +8,7 @@
         <tr v-if="blogs_num === 0"><td><div class="text">主人目前还没有文章哦~</div></td></tr>
         <tr v-else v-for="blog in blogs" :key="blog.blog_title">
           <td>
-            <div class="blog text fw-bold" v-on:click="chooseBlog(blog.id)">
+            <div class="blog text fw-bold" v-on:click="chooseBlog(blog.id)" :title="blog.blog_title">
               <u>{{ blog.blog_title }}</u>
             </div>
           </td>
@@ -54,8 +54,7 @@ export default {
         })
     },
     chooseBlog(id) {
-      console.log(id)
-      this.$router.push({ name: 'UnderConstruction' })
+      this.$router.push({ path: `/blog/${id}` })
     },
   },
   mounted() {

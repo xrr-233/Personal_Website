@@ -145,6 +145,29 @@ def get_blogs():
 
     return jsonify(res)
 
+@api.route('/get_blog/<key>', methods=['GET', 'POST'])
+def get_blog(key):
+    blog_article = BlogArticle.query.filter_by(id=key).first()
+
+    res = {
+        'error': None,
+        'blog': None,
+    }
+
+    try:
+        with open(os.getcwd() + url_for('static', filename=f'blogs/{blog_article.blog_filename}.md'), 'r') as f:
+            content = f.read()
+        res['blog'] = {
+            'blog_filename': blog_article.blog_filename,
+            'blog_title': blog_article.blog_title,
+            'create_time': blog_article.create_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'content': content,
+        }
+    except:
+        res.update({'error': 'critical'})
+
+    return jsonify(res)
+
 
 @api.route('/delete_blog', methods=['GET', 'POST'])
 def delete_blog():
@@ -261,6 +284,27 @@ def upload_announcement():
     announcement.create_time = datetime.now()
     db.session.add(announcement)
     db.session.commit()
+
+    return jsonify(res)
+
+@api.route('/get_announcement/<key>', methods=['GET', 'POST'])
+def get_announcement(key):
+    announcement = Announcement.query.filter_by(id=key).first()
+
+    res = {
+        'error': None,
+        'announcement': None,
+    }
+
+    try:
+        res['announcement'] = {
+            'id': announcement.id,
+            'announcement_title': announcement.announcement_title,
+            'create_time': announcement.create_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'content': announcement.announcement_content,
+        }
+    except:
+        res.update({'error': 'critical'})
 
     return jsonify(res)
 

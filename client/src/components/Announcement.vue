@@ -8,7 +8,7 @@
         <tr v-if="announcements_num === 0"><td><div class="text">暂无公告</div></td></tr>
         <tr v-else v-for="announcement in announcements" :key="announcement.announcement_title">
           <td>
-            <div class="announcement text fw-bold" v-on:click="chooseAnnouncement(announcement.id)">
+            <div class="announcement text fw-bold" v-on:click="chooseAnnouncement(announcement.id)" :title="announcement.announcement_title">
               <u>{{ announcement.announcement_title }}</u>
             </div>
           </td>
@@ -54,8 +54,7 @@ export default {
         })
     },
     chooseAnnouncement(id) {
-      console.log(id)
-      this.$router.push({ name: 'UnderConstruction' })
+      this.$router.push({ path: `/announcement/${id}` })
     },
   },
   mounted() {
