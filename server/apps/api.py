@@ -377,7 +377,7 @@ def get_music_list():
     except:
         pass
 
-    priority = []
+    priority = [{} for i in range(len(priority_file))]
     normal = []
     for idx, file in enumerate(music_dir):
         if (file == 'recommend.txt'):
@@ -403,7 +403,7 @@ def get_music_list():
         }
 
         if (file in priority_file):
-            priority.append(audiofile_info)
+            priority[priority_file.index(file)] = audiofile_info
         else:
             normal.append(audiofile_info)
     res['music_list'] = priority
