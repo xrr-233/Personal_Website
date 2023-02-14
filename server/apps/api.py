@@ -366,7 +366,22 @@ def get_music_list():
     res = {
         'music_list': []
     }
+
+    priority_file = []
+    try:
+        with open(f"{os.getcwd()}/{path}/recommend.txt") as f:
+            priority_file = f.readlines()
+            for i in range(len(priority_file)):
+                priority_file[i] = priority_file[i].strip('\n')
+            print(priority_file)
+    except:
+        pass
+
+    priority = []
+    normal = []
     for idx, file in enumerate(music_dir):
+        if (file == 'recommend.txt'):
+            continue
         audiofile = eyed3.load(f"{os.getcwd()}/{path}/{file}")
         # audio_img = None
         # for image in audiofile.tag.images:
@@ -374,13 +389,25 @@ def get_music_list():
         #     audio_img = base64_data
         # if(audio_img != None):
         #     audio_img = str(audio_img, encoding="utf-8")
+        name = audiofile.tag.title
+        artist = audiofile.tag.artist
+        if (name == None):
+            name = file[:-4]
+        if (artist == None):
+            artist = " "
         audiofile_info = {
-            'name': audiofile.tag.title,
-            'artist': audiofile.tag.artist,
+            'name': name,
+            'artist': artist,
             'key': idx,
             # 'cover': audio_img,
         }
-        res['music_list'].append(audiofile_info)
+
+        if (file in priority_file):
+            priority.append(audiofile_info)
+        else:
+            normal.append(audiofile_info)
+    res['music_list'] = priority
+    res['music_list'].extend(normal)
 
     return jsonify(res)
 
