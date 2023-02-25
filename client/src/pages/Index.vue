@@ -156,7 +156,11 @@ export default {
   cursor: pointer;
   color: blue;
 }
-.blog:deep(img) {
+.blog:deep(*) {
   width: 100%;
+  text-align:justify
+}
+.blog:deep(code) {
+  white-space: break-spaces;
 }
 </style>
