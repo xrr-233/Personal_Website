@@ -9,7 +9,7 @@
       <tbody>
         <tr>
           <td ref="table_clock">
-            <main class="clock-display">
+            <main class="clock-display" ref="clock-display">
               <h1>Clock.js</h1>
               <div class="date-field">
                 <div class="day-of-week">
@@ -119,6 +119,14 @@ import "@/assets/css/font.css"
 
 export default {
   name: "ClockMaster",
+  data() {
+    return {
+      homeWidth: 0,
+      homeHeight: 0,
+      clockWidth: 0,
+      clockHeight: 0,
+    }
+  },
   methods: {
     getCurrentTime() {
       let fullDate = new Date()
@@ -210,11 +218,12 @@ export default {
       }
     },
 
-    /*updateClock() {
-      resetClock()
-      getCurrentTime()
-      displayCurrentTime()
-    },*/
+    resizeWindow() {
+      this.homeWidth = this.$refs.home_clock.offsetWidth
+      this.homeHeight = this.$refs.home_clock.offsetHeight
+      this.$refs["clock-display"].style.zoom = this.homeWidth / this.clockWidth
+      // console.log(this.homeWidth, this.clockWidth)
+    },
   },
   mounted() {
     this.resetClock()
@@ -225,6 +234,10 @@ export default {
       this.getCurrentTime()
       this.displayCurrentTime()
     }, 1000)
+    this.clockWidth = this.$refs.table.offsetWidth
+    this.clockHeight = this.$refs.table.offsetHeight
+    this.resizeWindow()
+    window.addEventListener('resize', this.resizeWindow);
   },
   unmounted() {
     clearInterval(this.timer)
@@ -262,7 +275,6 @@ main.clock-display {
   background-color: #000000;
   color: #ffffff;
   box-shadow: 4px 4px 7px 4px rgba(0,0,0,.3);
-  zoom: 60%
 }
 .light-on {
 	color: #ffffff !important;

@@ -1,10 +1,12 @@
 <template>
   <frame></frame>
-  <router-view v-slot="{ Component }">
+  <div>
+    <router-view v-slot="{ Component }"> <!-- :key="$route.path" -->
     <keep-alive>
       <component :is="Component" />
     </keep-alive>
   </router-view>
+  </div>
   <div ref="a_player"></div>
 </template>
 
@@ -56,7 +58,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

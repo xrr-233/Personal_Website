@@ -6,10 +6,10 @@
         <div class="col-1">
           <div class="mx-auto logo" @click="push('Index')"></div>
         </div>
-        <div class="offset-2 col-1 header-tab" @click="push('Gallery')">作品</div>
-        <div class="col-1 header-tab" @click="push('UnderConstruction')">空间</div>
-        <div class="col-1 header-tab" @click="push('UnderConstruction')">工具</div>
-        <div class="col-1 header-tab" @click="push('Log')">日志</div>
+        <router-link class="offset-2 col-1 header-tab" to="/gallery">作品</router-link>
+        <router-link class="col-1 header-tab" to="/under_construction">空间</router-link>
+        <router-link class="col-1 header-tab" to="/under_construction">工具</router-link>
+        <router-link class="col-1 header-tab" to="/log">日志</router-link>
         <div class="offset-2 col-3 position-relative">
           <button class="btn dropdown-toggle" ref="login_tab" id="login_tab" data-toggle="dropdown" style="color: white">
             {{ userName }}
@@ -235,6 +235,8 @@ export default {
 .header-tab {
   height: 50px;
   overflow: hidden;
+  color: silver;
+  text-decoration: none;
 }
 .header-tab:hover {
   background: linear-gradient(black 80%, grey);
@@ -244,10 +246,17 @@ export default {
   animation-fill-mode: forwards;
   cursor: pointer;
 }
-.header-tab-pressed {
+.router-link-activated {
   background: white;
   color: black;
   height: 50px;
+}
+.router-link-activated:hover {
+  background: white;
+  color: black;
+  height: 50px;
+  animation: none;
+  cursor: default;
 }
 #login_side_block {
   width: 100%;
@@ -256,8 +265,8 @@ export default {
 }
 @keyframes header-tab-hover
 {
-  from {background-position: 0 0;}
-  to {background-position: 0 100%;}
+  from {background-position: 0 75%; color: silver;}
+  to {background-position: 0 100%; color: white;}
 }
 .portal img {
   width: 50px;

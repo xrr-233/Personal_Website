@@ -108,11 +108,15 @@ export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "IndependentPage",
   components: { Announcement, Blog, ClockMaster, Divination, Earth },
+  props: {
+    articleType: { type: String, required: true },
+    articleId: { type: Number, required: true }
+  },
   data() {
     return {
       userStatus: null,
-      articleType: null,
-      articleId: 0,
+
+
       blog: null,
       announcement: null,
     }
@@ -164,18 +168,8 @@ export default {
     }
   },
   mounted() {
-    this.articleType = this.$route.path.split('/')[1];
-    this.articleId = this.$route.params.id;
-    this.displayArticle();
-  },
-  updated() {
-    if (this.articleType === this.$route.path.split('/')[1] && this.articleId === this.$route.params.id)
-      return;
-
-    this.articleType = this.$route.path.split('/')[1];
-    this.articleId = this.$route.params.id;
-    this.displayArticle();
-  },
+    this.$watch(() => this.articleId || this.articleType, this.displayArticle)
+  }
 }
 </script>
 
@@ -198,5 +192,8 @@ export default {
 }
 .blog:deep(img) {
   width: 100%;
+}
+.blog:deep(code) {
+  white-space: break-spaces;
 }
 </style>
