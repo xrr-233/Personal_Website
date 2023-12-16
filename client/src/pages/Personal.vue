@@ -5,24 +5,33 @@
       <div class="col-3">
         <div class="row">
           <div class="container block_background" style="padding-top: 20px; padding-bottom: 20px">
-            <div class="container rounded-3 tab">个人中心</div>
-            <div class="container rounded-3 tab">安全</div>
-            <div v-if="userStatus != null && userStatus.authority === 3" class="container rounded-3 tab">发布博客</div>
-            <div v-if="userStatus != null && userStatus.authority === 3" class="container rounded-3 tab">发布公告</div>
+            <div class="container rounded-3 tab"
+                 @mouseenter="tabHover($event, 0)"
+                 @mouseleave="tabHoverOff($event, 0)"
+                 @click="tabClick($event, 0)">个人中心</div>
+            <div class="container rounded-3 tab"
+                 @mouseenter="tabHover($event, 1)"
+                 @mouseleave="tabHoverOff($event, 1)"
+                 @click="tabClick($event, 1)">安全</div>
+            <div class="container rounded-3 tab"
+                 @mouseenter="tabHover($event, 2)"
+                 @mouseleave="tabHoverOff($event, 2)"
+                 @click="tabClick($event, 2)"
+                 v-if="userStatus != null && userStatus.authority === 3">管理员</div>
           </div>
         </div>
       </div>
       <div class="col-9">
         <div class="row">
           <div class="offset-1 col-10 block_background">
-            <div class="row tab-block">
+            <div class="row tab-block" v-if="currentTab === 0">
               <div class="container">
                 <div class="container">
 
                 </div>
               </div>
             </div>
-            <div class="row tab-block">
+            <div class="row tab-block" v-if="currentTab === 1">
               <div class="container">
                 <div class="container pt-5">
                   <h4>修改密码</h4>
@@ -60,7 +69,7 @@
                 </div>
               </div>
             </div>
-            <div class="row tab-block" v-if="userStatus != null && userStatus.authority === 3">
+            <div class="row tab-block" v-if="currentTab === 2">
               <div class="container">
                 <div class="container pt-5">
                   <h4>发布博客</h4>
@@ -81,10 +90,6 @@
                 </div>
                 <div class="container pt-5">
                 </div>
-              </div>
-            </div>
-            <div class="row tab-block" v-if="userStatus != null && userStatus.authority === 3">
-              <div class="container">
                 <div class="container pt-5">
                   <h4>发布公告</h4>
                   <hr>
@@ -102,6 +107,29 @@
                     <button class="btn btn-outline-primary btn-sm" @click="submitAnnouncement()">提交</button>
                   </form>
                 </div>
+                <div class="container pt-5">
+                </div>
+                <div class="container pt-5">
+                  <h4>更改背景</h4>
+                  <hr>
+                  <form id="announcement_form" @submit.prevent novalidate>
+                    <div class="drag-area rounded-3 position-relative" @dragover="bgFileDragover" @drop="bgFileDrop">
+                      <div v-if="bgFileName" class="file-name position-absolute top-50 start-50 translate-middle">
+                        <img :src="bgFilePreview" :alt="bgFileName" height="175"/>
+                      </div>
+                      <div v-else class="uploader-tips position-absolute top-50 start-50 translate-middle">
+                        <span>将背景图片拖拽至此，或</span>
+                        <label for="fileInput" style="color: #11A8FF; cursor: pointer">点此上传</label>
+                        <br />
+                        仅支持PNG/JPG格式，文件大小不能超过10M
+                        <br />
+                        建议图片宽高比为16:9
+                      </div>
+                    </div>
+                    <input type="file" id="fileInput" @change="bgFileUpload" style="display: none;">
+                    <button class="btn btn-outline-primary btn-sm" @click="submitAnnouncement()">提交</button>
+                  </form>
+              </div>
                 <div class="container pt-5">
                 </div>
               </div>
@@ -124,12 +152,36 @@ export default {
   data() {
     return {
       userStatus: null,
-      screenWidth: 0,
-      screenHeight: 0,
-      scrollY: 0,
+      tabs: null,
+      currentTab: 1,
+      bgBatchFile: null,
+      bgFileName: null,
+      bgFilePreview: null,
+      MAX_FILE_SIZE: 10 * 1024 * 1024,
     }
   },
   methods: {
+    tabHover(e, id) {
+      if(id !== this.currentTab) {
+        e.currentTarget.style.backgroundColor = "#f8f9fa";
+        e.currentTarget.style.cursor = "pointer";
+      }
+    },
+    tabHoverOff(e, id) {
+      if(id !== this.currentTab) {
+        e.currentTarget.style.backgroundColor = "";
+        e.currentTarget.style.cursor = "default";
+      }
+    },
+    tabClick(e, id) {
+      if(id !== this.currentTab) {
+        this.tabs[this.currentTab].style.backgroundColor = "";
+        this.tabs[this.currentTab].style.color = "black";
+        this.currentTab = id;
+        e.currentTarget.style.backgroundColor = "#6c757d";
+        e.currentTarget.style.color = "white";
+      }
+    },
     changePassword() {
       const old_password = this.$refs.old_password, new_password = this.$refs.new_password, new_password2 = this.$refs.new_password2;
       const old_password_feedback = this.$refs.old_password_feedback, new_password_feedback = this.$refs.new_password_feedback, new_password2_feedback = this.$refs.new_password2_feedback;
@@ -283,39 +335,48 @@ export default {
           })
       }
     },
+    bgFileIsValid(file) {
+      if (!file) return;
+      if (file.size > this.MAX_FILE_SIZE)
+        return alert('文件大小不能超过10M！');
+      if (file.type !== 'image/png' && file.type !== 'image/jpeg')
+        return alert('请确认文件格式！');
+
+      this.bgBatchFile = file;
+      this.bgFileName = file.name;
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file)
+      const this_ = this;
+      reader.onload = function () {
+        this_.bgFilePreview = reader.result;
+        console.log(this_.bgFilePreview);
+      }
+    },
+    bgFileUpload (e) {
+      const file = e.target.files.item(0);
+      // 清空，防止上传后再上传没有反应
+      e.target.value = ''
+      return this.bgFileIsValid(file);
+    },
+    bgFileDragover (e) {
+      e.preventDefault();
+    },
+    bgFileDrop (e) {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0]; // 获取到第一个上传的文件对象
+      return this.bgFileIsValid(file);
+    },
+    // https://blog.csdn.net/qq_1307495/article/details/111952900
   },
   created() {
     this.userStatus = jwtDecode(localStorage.token)
   },
   mounted() {
-    let selected_tab = 2;
-    const tabs = document.querySelectorAll(".tab");
-    const tab_blocks = document.querySelectorAll(".tab-block")
+    this.tabs = document.querySelectorAll(".tab");
 
-    for(let i = 1; i <= tabs.length; i++) {
-      if(i === selected_tab) {
-        tabs[i - 1].classList.add("selected-tab")
-        tab_blocks[i - 1].style.display = "block"
-      }
-      else
-        tabs[i - 1].classList.add("not-selected-tab")
-
-      tabs[i - 1].index = i
-      tabs[i - 1].addEventListener("click", (e) => {
-        let index = e.target.index
-        if(index !== selected_tab) {
-          tabs[selected_tab - 1].classList.remove("selected-tab")
-          tabs[selected_tab - 1].classList.add("not-selected-tab")
-          tab_blocks[selected_tab - 1].style.display = "none"
-
-          selected_tab = index
-
-          tabs[selected_tab - 1].classList.remove("not-selected-tab")
-          tabs[selected_tab - 1].classList.add("selected-tab")
-          tab_blocks[selected_tab - 1].style.display = "block"
-        }
-      })
-    }
+    this.tabs[this.currentTab].style.backgroundColor = "#6c757d";
+    this.tabs[this.currentTab].style.color = "white";
   },
   beforeRouteEnter(to, from, next) {
     if(localStorage.getItem('token') !== null)
@@ -346,15 +407,13 @@ export default {
   border-radius: 5px;
   overflow: hidden;
 }
-.not-selected-tab:hover {
-  background-color: #f8f9fa;
-  cursor: pointer;
+.drag-area {
+  height: 200px;
+  border: dashed 1px gray;
+  margin-bottom: 10px;
+  color: #777;
 }
-.selected-tab {
-  background-color: #6c757d;
-  color: white;
-}
-.tab-block {
-  display: none;
+.uploader-tips {
+  text-align: center;
 }
 </style>
